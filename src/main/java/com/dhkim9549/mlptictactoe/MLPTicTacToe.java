@@ -126,7 +126,18 @@ public class MLPTicTacToe {
             INDArray outputArray = model.output(feature);
             System.out.println("outputArray = " + outputArray);
             featureArray.add(feature);
-            break;
+
+            int a = gs.chooseMove(outputArray);
+            System.out.println("a = " + a);
+
+            gs.playMove(a);
+            System.out.println("gs = " + gs);
+        }
+
+        Iterator it = featureArray.iterator();
+        while(it.hasNext()) {
+            INDArray lable = Nd4j.create();
+            DataSet ds = new DataSet((INDArray) it.next(), null);
         }
 
         return dsList;
@@ -135,8 +146,6 @@ public class MLPTicTacToe {
     private static List<DataSet> getTrainingData(Random rand, MultiLayerNetwork model) {
 
         int nSamples = 1;
-        int numInputs = 9 * 3;
-        int numOutputs = 9;
 
         List<DataSet> listDs = new ArrayList<DataSet>();
 

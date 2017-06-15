@@ -37,11 +37,13 @@ public class GameState {
     public static void main(String[] args) {
 
         GameState gs = new GameState();
+        gs.placeStone(0, 2);
         gs.placeStone(0, 0);
-        gs.placeStone(0, 1);
+        gs.placeStone(1, 2);
+        gs.placeStone(1, 1);
         System.out.println("gs = \n" + gs);
-        System.out.println("features = " + gs.getFeature());
-
+        gs.placeStone(2, 2);
+        System.out.println("gs = \n" + gs);
     }
 
     public String toString() {
@@ -103,15 +105,25 @@ public class GameState {
     }
 
     /**
+     * Play the next move
+     * @param a action
+     */
+    public void playMove(int a) {
+
+        placeStone(a / 3, a % 3);
+    }
+
+    /**
      * Check if the game is over.
      */
     public boolean isOver() {
 
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 3; j++) {
+
                 int basis = board[i][j];
                 if(basis == 0) {
-                    break;
+                    continue;
                 }
 
                 // Check diagonally
@@ -177,5 +189,29 @@ public class GameState {
         }
 
         return false;
+    }
+
+    /**
+     * Chooses the best move from the outputArray
+     * @param outputArray an output array from a neural network
+     * @return the best move
+     */
+    public int chooseMove(INDArray outputArray) {
+
+        int a = -1;
+        double max = 0.0;
+
+        for(int i = 0; i < outputArray.size(1); i++) {
+            if(board[i / 3][i % 3] != 0) {
+                continue;
+            }
+            double v = outputArray.getDouble(0, i);
+            if(max < v) {
+                a = i;
+                max = v;
+            }
+        }
+
+        return a;
     }
 }
