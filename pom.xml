@@ -12,6 +12,7 @@
         <groupId>org.deeplearning4j</groupId>
         <artifactId>deeplearning4j-examples-parent</artifactId>
         <version>0.8-SNAPSHOT</version>
+        <relativePath>./parent</relativePath>
     </parent>
 
     <name>DeepLearning4j Examples</name>
