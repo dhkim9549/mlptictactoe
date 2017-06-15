@@ -17,7 +17,7 @@ public class GameState {
     private int[][] board;
 
     /**
-     * Winner if the gate is at the terminal state.
+     * Winner if the game is at the terminal state.
      * Either 1 or -1
      */
     private int winner;
@@ -39,15 +39,8 @@ public class GameState {
         GameState gs = new GameState();
         gs.placeStone(0, 0);
         gs.placeStone(0, 1);
-        gs.placeStone(0, 2);
-        gs.placeStone(1, 0);
-        gs.placeStone(1, 2);
-        gs.placeStone(1, 1);
-        gs.placeStone(2, 1);
-        gs.placeStone(2, 2);
-        gs.placeStone(2, 0);
         System.out.println("gs = \n" + gs);
-        System.out.println("features = " + gs.getFeatures());
+        System.out.println("features = " + gs.getFeature());
 
     }
 
@@ -71,22 +64,33 @@ public class GameState {
     }
 
     /**
-     * Get features for a neural network input.
+     * Get a feature for the neural network input.
      */
-    public INDArray getFeatures() {
+    public INDArray getFeature() {
 
-        double[] data = new double[9];
+        double[] playerData = new double[9];
+        double[] opponentData = new double[9];
+        double[] emptyData = new double[9];
 
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 3; j++) {
-                data[i * 3 + j] = (double)board[i][j];
+                if(board[i][j] == this.nextPlayer) {
+                    playerData[i * 3 + j] = 1.0;
+                } else if(board[i][j] == - this.nextPlayer) {
+                    opponentData[i * 3 + j] = 1.0;
+                } else {
+                    emptyData[i * 3 + j] = 1.0;
+                }
             }
         }
 
-        INDArray dArray = Nd4j.create(data, new int[]{1, 9});
-        dArray = dArray.mul(nextPlayer);
+        INDArray playerArray = Nd4j.create(playerData, new int[]{1, 9});
+        INDArray opponentArray = Nd4j.create(opponentData, new int[]{1, 9});
+        INDArray emptyArray = Nd4j.create(emptyData, new int[]{1, 9});
 
-        return dArray;
+        INDArray featureArray = Nd4j.hstack(playerArray, opponentArray, emptyArray);
+
+        return featureArray;
     }
 
     /**

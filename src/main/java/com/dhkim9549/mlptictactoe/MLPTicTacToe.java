@@ -43,13 +43,15 @@ public class MLPTicTacToe {
         //model = readModelFromFile("/down/ttt_model.zip");
 
         //Load the training data:
-        List<DataSet> listDs = getTrainingData(new Random(), model);
-        DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
 
+        List<DataSet> listDs = getTrainingData(new Random(), model);
+/*
+        DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
         model = train(model, trainIter);
         System.out.println("model = " + model);
+*/
 
-        writeModelToFile(model, "/down/ttt_model.zip");
+        //writeModelToFile(model, "/down/ttt_model.zip");
 
         /*
         for(int i = 0; i < 100; i++) {
@@ -114,14 +116,25 @@ public class MLPTicTacToe {
 
     private static List<DataSet> playGame(MultiLayerNetwork model) {
 
+        List<DataSet> dsList = new ArrayList<DataSet>();
+        List<INDArray> featureArray = new ArrayList<INDArray>();
+
         GameState gs = new GameState();
 
-        return null;
+        while(gs.isOver() == false) {
+            INDArray feature = gs.getFeature();
+            INDArray outputArray = model.output(feature);
+            System.out.println("outputArray = " + outputArray);
+            featureArray.add(feature);
+            break;
+        }
+
+        return dsList;
     }
 
     private static List<DataSet> getTrainingData(Random rand, MultiLayerNetwork model) {
 
-        int nSamples = 10;
+        int nSamples = 1;
         int numInputs = 9 * 3;
         int numOutputs = 9;
 
