@@ -1,6 +1,7 @@
 package com.dhkim9549.mlptictactoe;
 
 
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
@@ -67,8 +68,10 @@ public class GameState {
 
     /**
      * Get a feature for the neural network input.
+     * @param player
+     * @return
      */
-    public INDArray getFeature() {
+    public INDArray getFeature(int player) {
 
         double[] playerData = new double[9];
         double[] opponentData = new double[9];
@@ -76,11 +79,11 @@ public class GameState {
 
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 3; j++) {
-                if(board[i][j] == this.nextPlayer) {
+                if(board[i][j] == player) {
                     playerData[i * 3 + j] = 1.0;
-                } else if(board[i][j] == - this.nextPlayer) {
+                } else if(board[i][j] == - player) {
                     opponentData[i * 3 + j] = 1.0;
-                } else {
+                } else if(board[i][j] == 0) {
                     emptyData[i * 3 + j] = 1.0;
                 }
             }
@@ -126,11 +129,30 @@ public class GameState {
                     continue;
                 }
 
-                // Check diagonally
+                // Check diagonally 1
                 for(int k = 0; k < 3; k++) {
                     int m = i + k;
                     int n = j + k;
                     if(m >= 3 || n >= 3) {
+                        break;
+                    }
+                    if(basis != board[m][n]) {
+                        break;
+                    }
+                    if(k == 2) {
+                        winner = basis;
+                        return true;
+                    }
+                }
+
+                // Check diagonally 2
+                for(int k = 0; k < 3; k++) {
+                    int m = i + k;
+                    int n = j - k;
+                    if(m >= 3 || n >= 3) {
+                        break;
+                    }
+                    if(m < 0 || n < 0) {
                         break;
                     }
                     if(basis != board[m][n]) {
@@ -192,26 +214,50 @@ public class GameState {
     }
 
     /**
-     * Chooses the best move from the outputArray
-     * @param outputArray an output array from a neural network
+     * Chooses the best move for the next player
+     * @param model a neural network
      * @return the best move
      */
-    public int chooseMove(INDArray outputArray) {
+    public int chooseMove(MultiLayerNetwork model) {
 
         int a = -1;
         double max = 0.0;
 
-        for(int i = 0; i < outputArray.size(1); i++) {
-            if(board[i / 3][i % 3] != 0) {
-                continue;
-            }
-            double v = outputArray.getDouble(0, i);
-            if(max < v) {
-                a = i;
-                max = v;
+        for(int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] != 0) {
+                    continue;
+                }
+                board[i][j] = nextPlayer;
+                INDArray feature = getFeature(nextPlayer);
+                INDArray outputArray = model.output(feature);
+                double v = outputArray.getDouble(0, 0);
+                if (max < v) {
+                    a = i * 3 + j;
+                    max = v;
+                }
+                board[i][j] = 0;
             }
         }
 
         return a;
+    }
+
+    /**
+     * Returns the winner of the game
+     * @return
+     */
+    public int getWinner() {
+
+        return winner;
+    }
+
+    /**
+     * Returns the next player of the game
+     * @return
+     */
+    public int getNextPlayer() {
+
+        return nextPlayer;
     }
 }

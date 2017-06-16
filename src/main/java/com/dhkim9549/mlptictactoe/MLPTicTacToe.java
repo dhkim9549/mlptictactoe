@@ -73,7 +73,7 @@ public class MLPTicTacToe {
         double learningRate = 0.003;
 
         int numInputs = 9 * 3;
-        int numOutputs = 9;
+        int numOutputs = 2;
         int numHiddenNodes = 9;
 
         //log.info("Build model....");
@@ -116,29 +116,38 @@ public class MLPTicTacToe {
 
     private static List<DataSet> playGame(MultiLayerNetwork model) {
 
-        List<DataSet> dsList = new ArrayList<DataSet>();
-        List<INDArray> featureArray = new ArrayList<INDArray>();
+        List<DataSet> dsList = new ArrayList<>();
+        List<INDArray> featureArray = new ArrayList<>();
 
         GameState gs = new GameState();
 
         while(gs.isOver() == false) {
-            INDArray feature = gs.getFeature();
-            INDArray outputArray = model.output(feature);
-            System.out.println("outputArray = " + outputArray);
-            featureArray.add(feature);
 
-            int a = gs.chooseMove(outputArray);
+            System.out.println("\n\n\n");
+
+            int a = gs.chooseMove(model);
             System.out.println("a = " + a);
 
             gs.playMove(a);
             System.out.println("gs = " + gs);
+
+            featureArray.add(gs.getFeature(gs.getNextPlayer()));
         }
 
+        //System.out.println("featureArray = " + featureArray);
+
         Iterator it = featureArray.iterator();
+        int winner = gs.getWinner();
         while(it.hasNext()) {
-            INDArray lable = Nd4j.create();
-            DataSet ds = new DataSet((INDArray) it.next(), null);
+            double[] labelData = new double[1];
+            labelData[0] = winner;
+            INDArray label = Nd4j.create(labelData, new int[]{1, 1});
+            DataSet ds = new DataSet((INDArray) it.next(), label);
+            winner *= -1;
+            dsList.add(ds);
         }
+
+        System.out.println("dsList = " + dsList);
 
         return dsList;
     }
