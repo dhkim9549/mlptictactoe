@@ -223,6 +223,8 @@ public class GameState {
         int a = -1;
         double max = 0.0;
 
+        INDArray valueArray = Nd4j.create(3, 3);
+
         for(int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 if (board[i][j] != 0) {
@@ -232,6 +234,7 @@ public class GameState {
                 INDArray feature = getFeature(nextPlayer);
                 INDArray outputArray = model.output(feature);
                 double v = outputArray.getDouble(0, 0);
+                valueArray.put(i, j, v);
                 if (max < v) {
                     a = i * 3 + j;
                     max = v;
@@ -239,6 +242,8 @@ public class GameState {
                 board[i][j] = 0;
             }
         }
+
+        System.out.println("valueArray = " + valueArray);
 
         return a;
     }

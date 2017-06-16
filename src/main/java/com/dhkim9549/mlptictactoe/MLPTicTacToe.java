@@ -39,19 +39,32 @@ public class MLPTicTacToe {
         long seed = 123;
         int batchSize = 50;
 
-        MultiLayerNetwork model = getInitModel();
-        //model = readModelFromFile("/down/ttt_model.zip");
+        //MultiLayerNetwork model = getInitModel();
+        MultiLayerNetwork model = readModelFromFile("/down/ttt_model.zip");
 
-        //Load the training data:
 
-        List<DataSet> listDs = getTrainingData(new Random(), model);
+
+        GameState gs = new GameState();
+        int a = gs.chooseMove(model);
+        System.out.println("a = " + a);
+
+        INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
+        System.out.println("output = " + output);
+
+
+
 /*
+        //Load the training data:
+        List<DataSet> listDs = getTrainingData(new Random(), model);
+
         DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
         model = train(model, trainIter);
         System.out.println("model = " + model);
+
+        writeModelToFile(model, "/down/ttt_model.zip");
 */
 
-        //writeModelToFile(model, "/down/ttt_model.zip");
+
 
         /*
         for(int i = 0; i < 100; i++) {
@@ -121,7 +134,7 @@ public class MLPTicTacToe {
 
         GameState gs = new GameState();
 
-        while(gs.isOver() == false) {
+        while(!gs.isOver()) {
 
             System.out.println("\n\n\n");
 
@@ -130,8 +143,9 @@ public class MLPTicTacToe {
 
             gs.playMove(a);
             System.out.println("gs = " + gs);
+            //System.out.println("gs.getFeature = " + gs.getFeature(- gs.getNextPlayer()));
 
-            featureArray.add(gs.getFeature(gs.getNextPlayer()));
+            featureArray.add(gs.getFeature(- gs.getNextPlayer()));
         }
 
         //System.out.println("featureArray = " + featureArray);
@@ -139,22 +153,28 @@ public class MLPTicTacToe {
         Iterator it = featureArray.iterator();
         int winner = gs.getWinner();
         while(it.hasNext()) {
-            double[] labelData = new double[1];
-            labelData[0] = winner;
-            INDArray label = Nd4j.create(labelData, new int[]{1, 1});
+            double[] labelData = new double[2];
+            if(winner == 1) {
+                labelData[0] = 1.0;
+                labelData[1] = 0.0;
+            } else if(winner == -1) {
+                labelData[0] = 0.0;
+                labelData[1] = 1.0;
+            }
+            INDArray label = Nd4j.create(labelData, new int[]{1, 2});
             DataSet ds = new DataSet((INDArray) it.next(), label);
             winner *= -1;
             dsList.add(ds);
         }
 
-        System.out.println("dsList = " + dsList);
+        System.out.println("dsList.size() = " + dsList.size());
 
         return dsList;
     }
 
     private static List<DataSet> getTrainingData(Random rand, MultiLayerNetwork model) {
 
-        int nSamples = 1;
+        int nSamples = 1000;
 
         List<DataSet> listDs = new ArrayList<DataSet>();
 
@@ -166,8 +186,6 @@ public class MLPTicTacToe {
 
         System.out.println("listDs.size() = " + listDs.size());
         Collections.shuffle(listDs, rand);
-
-        System.out.println("listDs = " + listDs);
 
         return listDs;
     }
