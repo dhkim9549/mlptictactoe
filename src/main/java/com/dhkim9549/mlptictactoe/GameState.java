@@ -1,6 +1,6 @@
 package com.dhkim9549.mlptictactoe;
 
-
+import java.util.Random;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
@@ -216,11 +216,27 @@ public class GameState {
     /**
      * Chooses the best move for the next player
      * @param model a neural network
+     * @param printOption
+     * @param trainMode
      * @return the best move
      */
-    public int chooseMove(MultiLayerNetwork model) {
+    public int chooseMove(MultiLayerNetwork model, boolean printOption, boolean trainMode) {
 
         int a = -1;
+        Random rnd = new Random();
+        double epsilon = 0.5; // epsilon greedy
+
+        if(trainMode && nextPlayer == -1 && rnd.nextDouble() < epsilon) {
+            while (a == -1) {
+                int i = rnd.nextInt(9);
+                if (board[i / 3][i % 3] == 0) {
+                    a = i;
+                }
+            }
+
+            return a;
+        }
+
         double max = 0.0;
 
         INDArray valueArray = Nd4j.create(3, 3);
@@ -233,6 +249,8 @@ public class GameState {
                 board[i][j] = nextPlayer;
                 INDArray feature = getFeature(nextPlayer);
                 INDArray outputArray = model.output(feature);
+                //System.out.println("feature = " + feature);
+                //System.out.println("outputArray = " + outputArray);
                 double v = outputArray.getDouble(0, 0);
                 valueArray.put(i, j, v);
                 if (max < v) {
@@ -243,7 +261,9 @@ public class GameState {
             }
         }
 
-        System.out.println("valueArray = " + valueArray);
+        if(printOption) {
+            System.out.println("valueArray = " + valueArray);
+        }
 
         return a;
     }

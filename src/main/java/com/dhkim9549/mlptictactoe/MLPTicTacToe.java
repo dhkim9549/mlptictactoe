@@ -44,16 +44,6 @@ public class MLPTicTacToe {
 
 
 
-        GameState gs = new GameState();
-        int a = gs.chooseMove(model);
-        System.out.println("a = " + a);
-
-        INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
-        System.out.println("output = " + output);
-
-
-
-/*
         //Load the training data:
         List<DataSet> listDs = getTrainingData(new Random(), model);
 
@@ -62,22 +52,20 @@ public class MLPTicTacToe {
         System.out.println("model = " + model);
 
         writeModelToFile(model, "/down/ttt_model.zip");
-*/
 
 
 
-        /*
-        for(int i = 0; i < 100; i++) {
-            double[][] data = new double[1][9];
-            data[0][0] = (double)i / 100.0;
-            data[0][1] = 0.777;
-            INDArray features = new NDArray(data);
-            System.out.println();
-            System.out.println("features = " + features);
-            INDArray predicted = model.output(features, false);
-            System.out.println("predicted = " + predicted);
-        }
-        */
+        GameState gs = new GameState();
+
+        INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
+        System.out.println("output = " + output);
+
+        int a = gs.chooseMove(model, true, false);
+        System.out.println("a = " + a);
+
+
+
+
     }
 
     public static MultiLayerNetwork getInitModel() throws Exception {
@@ -120,7 +108,7 @@ public class MLPTicTacToe {
 
     public static MultiLayerNetwork train(MultiLayerNetwork model, DataSetIterator trainIter) throws Exception {
 
-        model.setListeners(new ScoreIterationListener(100));    //Print score every 100 parameter updates
+        model.setListeners(new ScoreIterationListener(1000));    //Print score every 100 parameter updates
 
         model.fit( trainIter );
 
@@ -136,13 +124,13 @@ public class MLPTicTacToe {
 
         while(!gs.isOver()) {
 
-            System.out.println("\n\n\n");
+            //System.out.println("\n\n\n");
 
-            int a = gs.chooseMove(model);
-            System.out.println("a = " + a);
+            int a = gs.chooseMove(model, false, true);
+            //System.out.println("a = " + a);
 
             gs.playMove(a);
-            System.out.println("gs = " + gs);
+            //System.out.println("gs = " + gs);
             //System.out.println("gs.getFeature = " + gs.getFeature(- gs.getNextPlayer()));
 
             featureArray.add(gs.getFeature(- gs.getNextPlayer()));
@@ -167,14 +155,14 @@ public class MLPTicTacToe {
             dsList.add(ds);
         }
 
-        System.out.println("dsList.size() = " + dsList.size());
+        //System.out.println("dsList.size() = " + dsList.size());
 
         return dsList;
     }
 
     private static List<DataSet> getTrainingData(Random rand, MultiLayerNetwork model) {
 
-        int nSamples = 1000;
+        int nSamples = 2000;
 
         List<DataSet> listDs = new ArrayList<DataSet>();
 
