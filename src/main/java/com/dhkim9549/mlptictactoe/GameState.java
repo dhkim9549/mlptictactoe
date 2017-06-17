@@ -216,15 +216,14 @@ public class GameState {
     /**
      * Chooses the best move for the next player
      * @param model a neural network
-     * @param printOption
      * @param trainMode
      * @return the best move
      */
-    public int chooseMove(MultiLayerNetwork model, boolean printOption, boolean trainMode) {
+    public int chooseMove(MultiLayerNetwork model, boolean trainMode) {
 
         int a = -1;
         Random rnd = new Random();
-        double epsilon = 0.9; // epsilon greedy
+        double epsilon = 0.0; // epsilon greedy
 
         if(trainMode && rnd.nextDouble() < epsilon) {
             while (a == -1) {
@@ -237,33 +236,26 @@ public class GameState {
             return a;
         }
 
+        INDArray feature = getFeature(nextPlayer);
+        INDArray outputArray = model.output(feature);
+
         double max = - 1.0;
 
-        INDArray valueArray = Nd4j.create(3, 3);
+        for(int i = 0; i < outputArray.size(1); i++) {
 
-        for(int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (board[i][j] != 0) {
-                    continue;
-                }
-                board[i][j] = nextPlayer;
-                INDArray feature = getFeature(nextPlayer);
-                INDArray outputArray = model.output(feature);
-                //System.out.println("feature = " + feature);
-                //System.out.println("outputArray = " + outputArray);
-                double v = outputArray.getDouble(0, 0);
-                valueArray.put(i, j, v);
-                if (max < v) {
-                    a = i * 3 + j;
-                    max = v;
-                }
-                board[i][j] = 0;
+            if(board[i / 3][i % 3] != 0) {
+                continue;
+            }
+
+            double v = outputArray.getDouble(i);
+            if(v > max) {
+                a = i;
+                max = v;
             }
         }
 
-        if(printOption) {
-            System.out.println("valueArray = " + valueArray);
-        }
+        System.out.println("outputArray = " + outputArray);
+        System.out.println("a = " + a);
 
         return a;
     }
