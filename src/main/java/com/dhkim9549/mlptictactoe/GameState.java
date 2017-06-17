@@ -1,6 +1,7 @@
 package com.dhkim9549.mlptictactoe;
 
 import java.util.Random;
+import java.io.*;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
@@ -58,7 +59,8 @@ public class GameState {
 
         INDArray bArray = Nd4j.create(boardDouble);
 
-        String s = bArray.toString();
+        String s = "";
+        s += "\n" + bArray.toString();
         s += "\nisOver = " + isOver();
         s += "\nnextPlayer = " + nextPlayer;
         s += "\nwinner = " + winner;
@@ -199,15 +201,16 @@ public class GameState {
         }
 
         // Check if the board is full
+        int cnt = 0;
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 3; j++) {
-                if(board[i][j] == 0) {
-                    break;
-                }
-                if(i == 2 && j == 2) {
-                    return true;
+                if(board[i][j] != 0) {
+                    cnt++;
                 }
             }
+        }
+        if(cnt == 9) {
+            return true;
         }
 
         return false;
@@ -222,14 +225,27 @@ public class GameState {
      */
     public int chooseMove(MultiLayerNetwork model, boolean printOption, boolean isTrainMode) {
 
+        if(nextPlayer == -1) {
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            try {
+                System.out.println("gs = " + this);
+                System.out.print("Enter Integer:");
+                int aa = Integer.parseInt(br.readLine());
+                System.out.println("gs = " + this);
+                return aa;
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
         int a = -1;
         Random rnd = new Random();
         double epsilon = 0.0; // epsilon greedy
 
         if(nextPlayer == 1) {
-            epsilon = 0.10;
+            epsilon = 0.00;
         } else {
-            epsilon = 0.666;
+            epsilon = 0.99;
         }
 
         if(isTrainMode && rnd.nextDouble() < epsilon) {

@@ -33,17 +33,18 @@ public class MLPTicTacToe {
         int batchSize = 15;
 
         //MultiLayerNetwork model = getInitModel();
-        MultiLayerNetwork model = readModelFromFile("/down/ttt_model_200_1.zip");
+        MultiLayerNetwork model = readModelFromFile("/down/ttt_model_230.zip");
+        MultiLayerNetwork oponentModel = readModelFromFile("/down/ttt_model_200_2.zip");
 
         NeuralNetConfiguration config = model.conf();
         System.out.println("config = " + config);
 
-        for(int i = 201; i < 10000; i++) {
+        for(int i = 231; i < 10000; i++) {
 
             System.out.println("Training count i = " + i);
 
             //Load the training data:
-            List<DataSet> listDs = getTrainingData(new Random(), model);
+            List<DataSet> listDs = getTrainingData(new Random(), model, oponentModel);
 
             DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
             model = train(model, trainIter);
@@ -139,7 +140,7 @@ public class MLPTicTacToe {
     private static int numOfWins = 0;
     private static int numOfPlays = 0;
 
-    private static List<DataSet> playGame(MultiLayerNetwork model) {
+    private static List<DataSet> playGame(MultiLayerNetwork model, MultiLayerNetwork opponentModel) {
 
         List<DataSet> dsList = new ArrayList<>();
         List<INDArray> featureArray = new ArrayList<>();
@@ -153,15 +154,23 @@ public class MLPTicTacToe {
 
             //System.out.println("\n\n\n");
 
-            int a = gs.chooseMove(model, false, true);
+            int a = 0;
+            if(gs.getNextPlayer() == 1) {
+                a = gs.chooseMove(model, false, true);
+            } else {
+                a = gs.chooseMove(opponentModel, false, true);
+            }
             //System.out.println("a = " + a);
 
             gs.playMove(a);
             //System.out.println("gs = " + gs);
             //System.out.println("gs.getFeature = " + gs.getFeature(- gs.getNextPlayer()));
 
-            featureArray.add(gs.getFeature(-gs.getNextPlayer()));
+            featureArray.add(gs.getFeature(- gs.getNextPlayer()));
         }
+
+        System.out.println("gs = " + gs);
+        System.out.println("gggggggggggggggggggggggg\n\n");
 
         if(gs.getWinner() != 0) {
             numOfPlays++;
@@ -200,7 +209,7 @@ public class MLPTicTacToe {
         return dsList;
     }
 
-    private static List<DataSet> getTrainingData(Random rand, MultiLayerNetwork model) {
+    private static List<DataSet> getTrainingData(Random rand, MultiLayerNetwork model, MultiLayerNetwork opponentModel) {
 
         int nSamples = 5000;
 
@@ -208,7 +217,7 @@ public class MLPTicTacToe {
 
         for (int i = 0; i < nSamples; i++) {
 
-            List<DataSet> ds = playGame(model);
+            List<DataSet> ds = playGame(model, opponentModel);
             listDs.addAll(ds);
         }
 
