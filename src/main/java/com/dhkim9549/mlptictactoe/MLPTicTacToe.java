@@ -44,7 +44,7 @@ public class MLPTicTacToe {
 
 
 
-        for(int i = 0; i < 100; i++) {
+        for(int i = 0; i < 10000; i++) {
 
             //Load the training data:
             List<DataSet> listDs = getTrainingData(new Random(), model);
@@ -74,7 +74,6 @@ public class MLPTicTacToe {
                 gs.playMove(2);
                 gs.playMove(4);
                 gs.playMove(5);
-                gs.playMove(0);
 
                 INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
                 System.out.println("output = " + output);
@@ -146,8 +145,8 @@ public class MLPTicTacToe {
 
         GameState gs = new GameState();
 
-        gs.playMove(4);
-        gs.playMove(2);
+//        gs.playMove(4);
+//        gs.playMove(2);
 
         while(!gs.isOver()) {
 
