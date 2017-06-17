@@ -2,12 +2,7 @@ package com.dhkim9549.mlptictactoe;
 
 import java.io.*;
 import java.util.*;
-import org.datavec.api.records.reader.RecordReader;
-import org.datavec.api.records.reader.impl.csv.CSVRecordReader;
-import org.datavec.api.split.FileSplit;
-import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator;
 import org.deeplearning4j.datasets.iterator.impl.ListDataSetIterator;
-import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
@@ -20,11 +15,9 @@ import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.cpu.nativecpu.NDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.factory.Nd4j;
-import org.nd4j.linalg.io.ClassPathResource;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
 /**
@@ -39,18 +32,19 @@ public class MLPTicTacToe {
         long seed = 123;
         int batchSize = 15;
 
-        MultiLayerNetwork model = getInitModel();
-        //MultiLayerNetwork model = readModelFromFile("/down/ttt_model.zip");
+        //MultiLayerNetwork model = getInitModel();
+        MultiLayerNetwork model = readModelFromFile("/down/ttt_model_200.zip");
 
+        for(int i = 201; i < 10000; i++) {
 
-
-        for(int i = 0; i < 10000; i++) {
+            System.out.println("Training count i = " + i);
 
             //Load the training data:
             List<DataSet> listDs = getTrainingData(new Random(), model);
 
             DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
             model = train(model, trainIter);
+            System.out.println("\n\n\n");
             System.out.println("model = " + model);
 
 
@@ -81,10 +75,11 @@ public class MLPTicTacToe {
                 int a = gs.chooseMove(model, true, false);
                 System.out.println("a = " + a);
             }
+
+            if(i % 10 == 0) {
+                writeModelToFile(model, "/down/ttt_model_" + i + ".zip");
+            }
         }
-
-        writeModelToFile(model, "/down/ttt_model.zip");
-
     }
 
     public static MultiLayerNetwork getInitModel() throws Exception {
@@ -138,6 +133,9 @@ public class MLPTicTacToe {
         return model;
     }
 
+    private static int numOfWins = 0;
+    private static int numOfPlays = 0;
+
     private static List<DataSet> playGame(MultiLayerNetwork model) {
 
         List<DataSet> dsList = new ArrayList<>();
@@ -160,6 +158,13 @@ public class MLPTicTacToe {
             //System.out.println("gs.getFeature = " + gs.getFeature(- gs.getNextPlayer()));
 
             featureArray.add(gs.getFeature(- gs.getNextPlayer()));
+        }
+
+        if(gs.getWinner() != 0) {
+            numOfPlays++;
+        }
+        if(gs.getWinner() == 1) {
+            numOfWins++;
         }
 
         //System.out.println("featureArray = " + featureArray);
@@ -210,6 +215,8 @@ public class MLPTicTacToe {
             listDs2.add((DataSet)it.next());
             cnt++;
         }
+        System.out.println("listDs2.size() = " + listDs2.size());
+        System.out.println("Winning rate = " + (double)numOfWins / (double)numOfPlays);
 
         return listDs2;
     }

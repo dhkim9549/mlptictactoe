@@ -217,16 +217,22 @@ public class GameState {
      * Chooses the best move for the next player
      * @param model a neural network
      * @param printOption
-     * @param trainMode
+     * @param isTrainMode
      * @return the best move
      */
-    public int chooseMove(MultiLayerNetwork model, boolean printOption, boolean trainMode) {
+    public int chooseMove(MultiLayerNetwork model, boolean printOption, boolean isTrainMode) {
 
         int a = -1;
         Random rnd = new Random();
-        double epsilon = 0.99; // epsilon greedy
+        double epsilon = 0.0; // epsilon greedy
 
-        if(trainMode && rnd.nextDouble() < epsilon) {
+        if(nextPlayer == 1) {
+            epsilon = 0.99;
+        } else {
+            epsilon = 0.99;
+        }
+
+        if(isTrainMode && rnd.nextDouble() < epsilon) {
             while (a == -1) {
                 int i = rnd.nextInt(9);
                 if (board[i / 3][i % 3] == 0) {
