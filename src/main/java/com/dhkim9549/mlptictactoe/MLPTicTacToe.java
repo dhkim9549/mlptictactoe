@@ -37,45 +37,47 @@ public class MLPTicTacToe {
     public static void main(String[] args) throws Exception {
 
         long seed = 123;
-        int batchSize = 50;
+        int batchSize = 10;
 
-        //MultiLayerNetwork model = getInitModel();
-        MultiLayerNetwork model = readModelFromFile("/down/ttt_model.zip");
+        MultiLayerNetwork model = getInitModel();
+        //MultiLayerNetwork model = readModelFromFile("/down/ttt_model.zip");
 
 
 
-        //Load the training data:
-        List<DataSet> listDs = getTrainingData(new Random(), model);
+        for(int i = 0; i < 10; i++) {
 
-        DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
-        model = train(model, trainIter);
-        System.out.println("model = " + model);
+            //Load the training data:
+            List<DataSet> listDs = getTrainingData(new Random(), model);
+
+            DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
+            model = train(model, trainIter);
+            System.out.println("model = " + model);
+
+
+
+            // Evaluate
+            GameState gs = new GameState();
+
+            INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
+            System.out.println("output = " + output);
+
+            int a = gs.chooseMove(model, true, false);
+            System.out.println("a = " + a);
+
+        }
 
         writeModelToFile(model, "/down/ttt_model.zip");
-
-
-
-        GameState gs = new GameState();
-
-        INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
-        System.out.println("output = " + output);
-
-        int a = gs.chooseMove(model, true, false);
-        System.out.println("a = " + a);
-
-
-
 
     }
 
     public static MultiLayerNetwork getInitModel() throws Exception {
 
         int seed = 123;
-        double learningRate = 0.003;
+        double learningRate = 0.0003;
 
         int numInputs = 9 * 3;
         int numOutputs = 2;
-        int numHiddenNodes = 9;
+        int numHiddenNodes = 9 * 3;
 
         //log.info("Build model....");
         System.out.println("Build model....");
@@ -84,7 +86,7 @@ public class MLPTicTacToe {
                 .iterations(1)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .learningRate(learningRate)
-                .updater(Updater.NESTEROVS).momentum(0.9)
+                .updater(Updater.NESTEROVS).momentum(0.1)
                 .list()
                 .layer(0, new DenseLayer.Builder().nIn(numInputs).nOut(numHiddenNodes)
                         .weightInit(WeightInit.XAVIER)
@@ -94,7 +96,11 @@ public class MLPTicTacToe {
                         .weightInit(WeightInit.XAVIER)
                         .activation(Activation.RELU)
                         .build())
-                .layer(2, new OutputLayer.Builder(LossFunction.NEGATIVELOGLIKELIHOOD)
+                .layer(2, new DenseLayer.Builder().nIn(numHiddenNodes).nOut(numHiddenNodes)
+                        .weightInit(WeightInit.XAVIER)
+                        .activation(Activation.RELU)
+                        .build())
+                .layer(3, new OutputLayer.Builder(LossFunction.NEGATIVELOGLIKELIHOOD)
                         .weightInit(WeightInit.XAVIER)
                         .activation(Activation.SOFTMAX)
                         .nIn(numHiddenNodes).nOut(numOutputs).build())
@@ -108,7 +114,7 @@ public class MLPTicTacToe {
 
     public static MultiLayerNetwork train(MultiLayerNetwork model, DataSetIterator trainIter) throws Exception {
 
-        model.setListeners(new ScoreIterationListener(1000));    //Print score every 100 parameter updates
+        model.setListeners(new ScoreIterationListener(100));    //Print score every 100 parameter updates
 
         model.fit( trainIter );
 
@@ -162,7 +168,7 @@ public class MLPTicTacToe {
 
     private static List<DataSet> getTrainingData(Random rand, MultiLayerNetwork model) {
 
-        int nSamples = 2000;
+        int nSamples = 5000;
 
         List<DataSet> listDs = new ArrayList<DataSet>();
 
@@ -175,7 +181,15 @@ public class MLPTicTacToe {
         System.out.println("listDs.size() = " + listDs.size());
         Collections.shuffle(listDs, rand);
 
-        return listDs;
+        List<DataSet> listDs2 = new ArrayList<DataSet>();
+        Iterator it = listDs.iterator();
+        int cnt = 0;
+        while(it.hasNext() && cnt < listDs.size() * 0.9) {
+            listDs2.add((DataSet)it.next());
+            cnt++;
+        }
+
+        return listDs2;
     }
 
     public static MultiLayerNetwork readModelFromFile(String fileName) throws Exception {

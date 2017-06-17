@@ -224,9 +224,9 @@ public class GameState {
 
         int a = -1;
         Random rnd = new Random();
-        double epsilon = 0.5; // epsilon greedy
+        double epsilon = 0.9; // epsilon greedy
 
-        if(trainMode && nextPlayer == -1 && rnd.nextDouble() < epsilon) {
+        if(trainMode && rnd.nextDouble() < epsilon) {
             while (a == -1) {
                 int i = rnd.nextInt(9);
                 if (board[i / 3][i % 3] == 0) {
@@ -237,7 +237,7 @@ public class GameState {
             return a;
         }
 
-        double max = 0.0;
+        double max = - 1.0;
 
         INDArray valueArray = Nd4j.create(3, 3);
 
