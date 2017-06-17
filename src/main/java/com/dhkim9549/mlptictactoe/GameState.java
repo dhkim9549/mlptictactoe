@@ -227,9 +227,9 @@ public class GameState {
         double epsilon = 0.0; // epsilon greedy
 
         if(nextPlayer == 1) {
-            epsilon = 0.99;
+            epsilon = 0.10;
         } else {
-            epsilon = 0.99;
+            epsilon = 0.666;
         }
 
         if(isTrainMode && rnd.nextDouble() < epsilon) {

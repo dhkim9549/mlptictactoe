@@ -33,7 +33,10 @@ public class MLPTicTacToe {
         int batchSize = 15;
 
         //MultiLayerNetwork model = getInitModel();
-        MultiLayerNetwork model = readModelFromFile("/down/ttt_model_200.zip");
+        MultiLayerNetwork model = readModelFromFile("/down/ttt_model_200_1.zip");
+
+        NeuralNetConfiguration config = model.conf();
+        System.out.println("config = " + config);
 
         for(int i = 201; i < 10000; i++) {
 
@@ -44,7 +47,7 @@ public class MLPTicTacToe {
 
             DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
             model = train(model, trainIter);
-            System.out.println("\n\n\n");
+            System.out.println("\n\n");
             System.out.println("model = " + model);
 
 
@@ -157,7 +160,7 @@ public class MLPTicTacToe {
             //System.out.println("gs = " + gs);
             //System.out.println("gs.getFeature = " + gs.getFeature(- gs.getNextPlayer()));
 
-            featureArray.add(gs.getFeature(- gs.getNextPlayer()));
+            featureArray.add(gs.getFeature(-gs.getNextPlayer()));
         }
 
         if(gs.getWinner() != 0) {
@@ -170,6 +173,7 @@ public class MLPTicTacToe {
         //System.out.println("featureArray = " + featureArray);
 
         int winner = gs.getWinner();
+        int player = 1;
         if(winner != 0) {
             Iterator it = featureArray.iterator();
             while (it.hasNext()) {
@@ -184,7 +188,10 @@ public class MLPTicTacToe {
                 INDArray label = Nd4j.create(labelData, new int[]{1, 2});
                 DataSet ds = new DataSet((INDArray) it.next(), label);
                 winner *= -1;
-                dsList.add(ds);
+                if(player == 1) {
+                    dsList.add(ds);
+                }
+                player *= -1;
             }
         }
 
