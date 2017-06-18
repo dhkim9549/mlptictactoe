@@ -32,25 +32,13 @@ public class MLPTicTacToe {
         int batchSize = 15;
 
         //MultiLayerNetwork model = getInitModel();
-        MultiLayerNetwork model = readModelFromFile("/down/ttt_model_330_2.zip");
+        MultiLayerNetwork model = readModelFromFile("/down/ttt_model_310_2.zip");
         //MultiLayerNetwork oponentModel = readModelFromFile("/down/ttt_model_200_2.zip");
 
         NeuralNetConfiguration config = model.conf();
         System.out.println("config = " + config);
 
-        for(int i = 331; i < 10000; i++) {
-
-            System.out.println("Training count i = " + i);
-
-            //Load the training data:
-            List<DataSet> listDs = getTrainingData(model, model);
-
-            DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
-            model = train(model, trainIter);
-            System.out.println("\n\n");
-            System.out.println("model = " + model);
-
-
+        for(int i = 311; i < 10000; i++) {
 
             // Evaluate
             {
@@ -78,6 +66,17 @@ public class MLPTicTacToe {
                 int a = gs.chooseMove(model, true, false);
                 System.out.println("a = " + a);
             }
+
+
+            System.out.println("Training count i = " + i);
+
+            //Load the training data:
+            List<DataSet> listDs = getTrainingData(model, model);
+
+            DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
+            //model = train(model, trainIter);
+            System.out.println("\n\n");
+            System.out.println("model = " + model);
 
             if(i % 10 == 0) {
                 writeModelToFile(model, "/down/ttt_model_" + i + ".zip");
@@ -144,15 +143,11 @@ public class MLPTicTacToe {
 
         List<DataSet> dsList = new ArrayList<>();
         List<INDArray> featureArray = new ArrayList<>();
+        List moveList = new ArrayList();
 
         GameState gs = new GameState();
 
-//        gs.playMove(4);
-//        gs.playMove(2);
-
         while(!gs.isOver()) {
-
-            //System.out.println("\n\n\n");
 
             int a = 0;
             if(gs.getNextPlayer() == 1) {
@@ -160,20 +155,21 @@ public class MLPTicTacToe {
             } else {
                 a = gs.chooseMove(opponentModel, false, true);
             }
-            //System.out.println("a = " + a);
+            moveList.add(a);
 
             gs.playMove(a);
-            //System.out.println("gs = " + gs);
-            //System.out.println("gs.getFeature = " + gs.getFeature(- gs.getNextPlayer()));
 
             featureArray.add(gs.getFeature(- gs.getNextPlayer()));
         }
 
+        if(gs.getWinner() == -1) {
+            System.out.println("LOSE **************");
+            System.out.println("moveList = " + moveList);
+        }
 
-/*
+
         System.out.println("gs = " + gs);
         System.out.println("gggggggggggggggggggggggg\n\n");
-*/
 
 
         numOfPlays++;
@@ -187,7 +183,7 @@ public class MLPTicTacToe {
 
         int winner = gs.getWinner();
         int player = 1;
-        if(winner != 0 || true) {
+        if(true || winner != 0) {
             Iterator it = featureArray.iterator();
             while (it.hasNext()) {
                 double[] labelData = new double[2];
