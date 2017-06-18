@@ -225,6 +225,7 @@ public class GameState {
      */
     public int chooseMove(MultiLayerNetwork model, boolean printOption, boolean isTrainMode) {
 
+/*
         if(nextPlayer == -1) {
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             try {
@@ -237,6 +238,7 @@ public class GameState {
                 e.printStackTrace();
             }
         }
+*/
 
         int a = -1;
         Random rnd = new Random();
@@ -245,7 +247,7 @@ public class GameState {
         if(nextPlayer == 1) {
             epsilon = 0.00;
         } else {
-            epsilon = 0.99;
+            epsilon = 1.00;
         }
 
         if(isTrainMode && rnd.nextDouble() < epsilon) {

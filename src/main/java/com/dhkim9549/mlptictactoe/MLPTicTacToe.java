@@ -29,22 +29,21 @@ public class MLPTicTacToe {
 
     public static void main(String[] args) throws Exception {
 
-        long seed = 123;
         int batchSize = 15;
 
         //MultiLayerNetwork model = getInitModel();
-        MultiLayerNetwork model = readModelFromFile("/down/ttt_model_230.zip");
-        MultiLayerNetwork oponentModel = readModelFromFile("/down/ttt_model_200_2.zip");
+        MultiLayerNetwork model = readModelFromFile("/down/ttt_model_330_2.zip");
+        //MultiLayerNetwork oponentModel = readModelFromFile("/down/ttt_model_200_2.zip");
 
         NeuralNetConfiguration config = model.conf();
         System.out.println("config = " + config);
 
-        for(int i = 231; i < 10000; i++) {
+        for(int i = 331; i < 10000; i++) {
 
             System.out.println("Training count i = " + i);
 
             //Load the training data:
-            List<DataSet> listDs = getTrainingData(new Random(), model, oponentModel);
+            List<DataSet> listDs = getTrainingData(model, model);
 
             DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
             model = train(model, trainIter);
@@ -138,6 +137,7 @@ public class MLPTicTacToe {
     }
 
     private static int numOfWins = 0;
+    private static int numOfLoses = 0;
     private static int numOfPlays = 0;
 
     private static List<DataSet> playGame(MultiLayerNetwork model, MultiLayerNetwork opponentModel) {
@@ -169,34 +169,40 @@ public class MLPTicTacToe {
             featureArray.add(gs.getFeature(- gs.getNextPlayer()));
         }
 
+
+/*
         System.out.println("gs = " + gs);
         System.out.println("gggggggggggggggggggggggg\n\n");
+*/
 
-        if(gs.getWinner() != 0) {
-            numOfPlays++;
-        }
+
+        numOfPlays++;
         if(gs.getWinner() == 1) {
             numOfWins++;
+        } else if(gs.getWinner() == -1) {
+            numOfLoses++;
         }
 
         //System.out.println("featureArray = " + featureArray);
 
         int winner = gs.getWinner();
         int player = 1;
-        if(winner != 0) {
+        if(winner != 0 || true) {
             Iterator it = featureArray.iterator();
             while (it.hasNext()) {
                 double[] labelData = new double[2];
-                if (winner == 1) {
+                if (winner == player) {
                     labelData[0] = 1.0;
                     labelData[1] = 0.0;
-                } else if (winner == -1) {
+                } else if (winner == - player) {
                     labelData[0] = 0.0;
                     labelData[1] = 1.0;
+                } else {
+                    labelData[0] = 0.5;
+                    labelData[1] = 0.5;
                 }
                 INDArray label = Nd4j.create(labelData, new int[]{1, 2});
                 DataSet ds = new DataSet((INDArray) it.next(), label);
-                winner *= -1;
                 if(player == 1) {
                     dsList.add(ds);
                 }
@@ -209,7 +215,7 @@ public class MLPTicTacToe {
         return dsList;
     }
 
-    private static List<DataSet> getTrainingData(Random rand, MultiLayerNetwork model, MultiLayerNetwork opponentModel) {
+    private static List<DataSet> getTrainingData(MultiLayerNetwork model, MultiLayerNetwork opponentModel) {
 
         int nSamples = 5000;
 
@@ -222,7 +228,7 @@ public class MLPTicTacToe {
         }
 
         System.out.println("listDs.size() = " + listDs.size());
-        Collections.shuffle(listDs, rand);
+        Collections.shuffle(listDs, new Random());
 
         List<DataSet> listDs2 = new ArrayList<DataSet>();
         Iterator it = listDs.iterator();
@@ -233,6 +239,7 @@ public class MLPTicTacToe {
         }
         System.out.println("listDs2.size() = " + listDs2.size());
         System.out.println("Winning rate = " + (double)numOfWins / (double)numOfPlays);
+        System.out.println("Losing rate = " + (double)numOfLoses / (double)numOfPlays);
 
         return listDs2;
     }
