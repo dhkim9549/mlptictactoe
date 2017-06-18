@@ -51,7 +51,6 @@ public class MLPTicTacToe {
                 System.out.println("a = " + a);
             }
 
-
             // Evaluate 2
             {
                 GameState gs = new GameState();
@@ -66,7 +65,6 @@ public class MLPTicTacToe {
                 int a = gs.chooseMove(model, true, false);
                 System.out.println("a = " + a);
             }
-
 
             System.out.println("Training count i = " + i);
 
@@ -93,7 +91,6 @@ public class MLPTicTacToe {
         int numOutputs = 2;
         int numHiddenNodes = 9 * 3;
 
-        //log.info("Build model....");
         System.out.println("Build model....");
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .seed(seed)
@@ -168,9 +165,10 @@ public class MLPTicTacToe {
         }
 
 
+/*
         System.out.println("gs = " + gs);
         System.out.println("gggggggggggggggggggggggg\n\n");
-
+*/
 
         numOfPlays++;
         if(gs.getWinner() == 1) {
@@ -178,8 +176,6 @@ public class MLPTicTacToe {
         } else if(gs.getWinner() == -1) {
             numOfLoses++;
         }
-
-        //System.out.println("featureArray = " + featureArray);
 
         int winner = gs.getWinner();
         int player = 1;
@@ -205,8 +201,6 @@ public class MLPTicTacToe {
                 player *= -1;
             }
         }
-
-        //System.out.println("dsList.size() = " + dsList.size());
 
         return dsList;
     }

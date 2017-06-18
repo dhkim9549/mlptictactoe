@@ -225,6 +225,7 @@ public class GameState {
      */
     public int chooseMove(MultiLayerNetwork model, boolean printOption, boolean isTrainMode) {
 
+/*
         if(nextPlayer == -1) {
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             try {
@@ -237,16 +238,20 @@ public class GameState {
                 e.printStackTrace();
             }
         }
+*/
 
-        int a = -1;
-        Random rnd = new Random();
-        double epsilon = 0.0; // epsilon greedy
-
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // epsilon greedy
+        double epsilon = 0.0;
         if(nextPlayer == 1) {
             epsilon = 0.00;
         } else {
             epsilon = 1.00;
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        int a = -1;
+        Random rnd = new Random();
 
         if(isTrainMode && rnd.nextDouble() < epsilon) {
             while (a == -1) {
@@ -271,8 +276,6 @@ public class GameState {
                 board[i][j] = nextPlayer;
                 INDArray feature = getFeature(nextPlayer);
                 INDArray outputArray = model.output(feature);
-                //System.out.println("feature = " + feature);
-                //System.out.println("outputArray = " + outputArray);
                 double v = outputArray.getDouble(0, 0);
                 valueArray.put(i, j, v);
                 if (max < v) {
