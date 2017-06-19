@@ -69,10 +69,10 @@ public class MLPTicTacToe {
             // Evaluate 3
             {
                 GameState gs = new GameState();
-                gs.playMove(4);
                 gs.playMove(1);
-                gs.playMove(5);
                 gs.playMove(2);
+                gs.playMove(4);
+                gs.playMove(0);
 
                 INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
                 System.out.println("output = " + output);
@@ -87,7 +87,7 @@ public class MLPTicTacToe {
             List<DataSet> listDs = getTrainingData(model, model);
 
             DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
-            //model = train(model, trainIter);
+            model = train(model, trainIter);
             System.out.println("\n\n");
             System.out.println("model = " + model);
 
@@ -212,9 +212,9 @@ public class MLPTicTacToe {
                 }
                 INDArray label = Nd4j.create(labelData, new int[]{1, 2});
                 DataSet ds = new DataSet((INDArray) it.next(), label);
-                if(player == 1) {
+                //if(player == 1) {
                     dsList.add(ds);
-                }
+                //}
                 player *= -1;
             }
         }

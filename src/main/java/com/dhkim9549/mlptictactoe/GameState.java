@@ -244,7 +244,7 @@ public class GameState {
         // epsilon greedy
         double epsilon = 0.0;
         if(nextPlayer == 1) {
-            epsilon = 0.00;
+            epsilon = 1.00;
         } else {
             epsilon = 1.00;
         }
