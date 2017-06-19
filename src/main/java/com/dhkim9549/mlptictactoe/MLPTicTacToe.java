@@ -29,7 +29,7 @@ public class MLPTicTacToe {
 
     public static void main(String[] args) throws Exception {
 
-        int batchSize = 15;
+        int batchSize = 32;
 
         //MultiLayerNetwork model = getInitModel();
         MultiLayerNetwork model = readModelFromFile("/down/ttt_model_310_2.zip");
@@ -38,7 +38,7 @@ public class MLPTicTacToe {
         NeuralNetConfiguration config = model.conf();
         System.out.println("config = " + config);
 
-        for(int i = 311; i < 10000; i++) {
+        for(int i = 1; i < 10000; i++) {
 
             // Evaluate
             {
@@ -66,6 +66,21 @@ public class MLPTicTacToe {
                 System.out.println("a = " + a);
             }
 
+            // Evaluate 3
+            {
+                GameState gs = new GameState();
+                gs.playMove(4);
+                gs.playMove(1);
+                gs.playMove(5);
+                gs.playMove(2);
+
+                INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
+                System.out.println("output = " + output);
+
+                int a = gs.chooseMove(model, true, false);
+                System.out.println("a = " + a);
+            }
+
             System.out.println("Training count i = " + i);
 
             //Load the training data:
@@ -85,7 +100,7 @@ public class MLPTicTacToe {
     public static MultiLayerNetwork getInitModel() throws Exception {
 
         int seed = 123;
-        double learningRate = 0.003;
+        double learningRate = 0.00025;
 
         int numInputs = 9 * 3;
         int numOutputs = 2;
@@ -97,7 +112,7 @@ public class MLPTicTacToe {
                 .iterations(1)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .learningRate(learningRate)
-                .updater(Updater.RMSPROP)
+                .updater(Updater.RMSPROP).momentum(0.95)
                 .list()
                 .layer(0, new DenseLayer.Builder().nIn(numInputs).nOut(numHiddenNodes)
                         .weightInit(WeightInit.XAVIER)
@@ -159,10 +174,12 @@ public class MLPTicTacToe {
             featureArray.add(gs.getFeature(- gs.getNextPlayer()));
         }
 
+/*
         if(gs.getWinner() == -1) {
             System.out.println("LOSE **************");
             System.out.println("moveList = " + moveList);
         }
+*/
 
 
 /*
