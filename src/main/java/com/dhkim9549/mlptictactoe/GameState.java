@@ -16,7 +16,7 @@ public class GameState {
      * Either 1 or -1
      * 0 if empty
      */
-    private int[][] board;
+    public int[][] board;
 
     /**
      * Winner if the game is at the terminal state.
@@ -28,7 +28,7 @@ public class GameState {
      * Next player
      * Either 1 or -1
      */
-    private int nextPlayer;
+    public int nextPlayer;
 
     public GameState() {
         board = new int[3][3];
@@ -214,83 +214,6 @@ public class GameState {
         }
 
         return false;
-    }
-
-    /**
-     * Chooses the best move for the next player
-     * @param model a neural network
-     * @param printOption
-     * @param isTrainMode
-     * @return the best move
-     */
-    public int chooseMove(MultiLayerNetwork model, boolean printOption, boolean isTrainMode) {
-
-/*
-        if(nextPlayer == -1) {
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-            try {
-                System.out.println("gs = " + this);
-                System.out.print("Enter Integer:");
-                int aa = Integer.parseInt(br.readLine());
-                System.out.println("gs = " + this);
-                return aa;
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-*/
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // epsilon greedy
-        double epsilon = 0.0;
-        if(nextPlayer == 1) {
-            epsilon = 1.00;
-        } else {
-            epsilon = 1.00;
-        }
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        int a = -1;
-        Random rnd = new Random();
-
-        if(isTrainMode && rnd.nextDouble() < epsilon) {
-            while (a == -1) {
-                int i = rnd.nextInt(9);
-                if (board[i / 3][i % 3] == 0) {
-                    a = i;
-                }
-            }
-
-            return a;
-        }
-
-        double max = - 1.0;
-
-        INDArray valueArray = Nd4j.create(3, 3);
-
-        for(int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (board[i][j] != 0) {
-                    continue;
-                }
-                board[i][j] = nextPlayer;
-                INDArray feature = getFeature(nextPlayer);
-                INDArray outputArray = model.output(feature);
-                double v = outputArray.getDouble(0, 0);
-                valueArray.put(i, j, v);
-                if (max < v) {
-                    a = i * 3 + j;
-                    max = v;
-                }
-                board[i][j] = 0;
-            }
-        }
-
-        if(printOption) {
-            System.out.println("valueArray = " + valueArray);
-        }
-
-        return a;
     }
 
     /**

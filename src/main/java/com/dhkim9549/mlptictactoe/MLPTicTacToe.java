@@ -47,7 +47,8 @@ public class MLPTicTacToe {
                 INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
                 System.out.println("output = " + output);
 
-                int a = gs.chooseMove(model, true, false);
+                Policy policy = new Policy(model, 0.0);
+                int a = policy.chooseMove(gs, true);
                 System.out.println("a = " + a);
             }
 
@@ -62,7 +63,8 @@ public class MLPTicTacToe {
                 INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
                 System.out.println("output = " + output);
 
-                int a = gs.chooseMove(model, true, false);
+                Policy policy = new Policy(model, 0.0);
+                int a = policy.chooseMove(gs, true);
                 System.out.println("a = " + a);
             }
 
@@ -77,14 +79,15 @@ public class MLPTicTacToe {
                 INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
                 System.out.println("output = " + output);
 
-                int a = gs.chooseMove(model, true, false);
+                Policy policy = new Policy(model, 0.0);
+                int a = policy.chooseMove(gs, true);
                 System.out.println("a = " + a);
             }
 
             System.out.println("Training count i = " + i);
 
             //Load the training data:
-            List<DataSet> listDs = getTrainingData(model, model);
+            List<DataSet> listDs = getTrainingData(new Policy(model, 1.0), new Policy(model, 1.0));
 
             DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
             model = train(model, trainIter);
@@ -151,7 +154,7 @@ public class MLPTicTacToe {
     private static int numOfLoses = 0;
     private static int numOfPlays = 0;
 
-    private static List<DataSet> playGame(MultiLayerNetwork model, MultiLayerNetwork opponentModel) {
+    private static List<DataSet> playGame(Policy policy1, Policy policy2) {
 
         List<DataSet> dsList = new ArrayList<>();
         List<INDArray> featureArray = new ArrayList<>();
@@ -163,9 +166,9 @@ public class MLPTicTacToe {
 
             int a = 0;
             if(gs.getNextPlayer() == 1) {
-                a = gs.chooseMove(model, false, true);
+                a = policy1.chooseMove(gs, false);
             } else {
-                a = gs.chooseMove(opponentModel, false, true);
+                a = policy2.chooseMove(gs, false);
             }
             moveList.add(a);
 
@@ -222,15 +225,15 @@ public class MLPTicTacToe {
         return dsList;
     }
 
-    private static List<DataSet> getTrainingData(MultiLayerNetwork model, MultiLayerNetwork opponentModel) {
+    private static List<DataSet> getTrainingData(Policy playerPolicy, Policy opponentPolicy) {
 
         int nSamples = 5000;
 
-        List<DataSet> listDs = new ArrayList<DataSet>();
+        List<DataSet> listDs = new ArrayList<>();
 
         for (int i = 0; i < nSamples; i++) {
 
-            List<DataSet> ds = playGame(model, opponentModel);
+            List<DataSet> ds = playGame(playerPolicy, opponentPolicy);
             listDs.addAll(ds);
         }
 
@@ -276,5 +279,4 @@ public class MLPTicTacToe {
         System.out.println("Serializing model complete.");
 
     }
-
 }
