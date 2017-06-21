@@ -13,11 +13,19 @@ public class Policy {
 
     private double epsilon = 0.0;
     private MultiLayerNetwork model = null;
+    private boolean toBeTrained = false;
 
     public Policy(MultiLayerNetwork model, double epsilon) {
 
         this.model = model;
         this.epsilon = epsilon;
+    }
+
+    public Policy(MultiLayerNetwork model, double epsilon, boolean toBeTrained) {
+
+        this.model = model;
+        this.epsilon = epsilon;
+        this.toBeTrained = toBeTrained;
     }
 
     /**
@@ -83,5 +91,13 @@ public class Policy {
         }
 
         return a;
+    }
+
+    /**
+     *
+     * @return Returns whether this policy is to be trained or not
+     */
+    public boolean isToBeTrained() {
+        return toBeTrained;
     }
 }

@@ -87,7 +87,7 @@ public class MLPTicTacToe {
             System.out.println("Training count i = " + i);
 
             //Load the training data:
-            List<DataSet> listDs = getTrainingData(new Policy(model, 1.0), new Policy(model, 1.0));
+            List<DataSet> listDs = getTrainingData(new Policy(model, 1.0, true), new Policy(model, 1.0, false));
 
             DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
             model = train(model, trainIter);
@@ -199,27 +199,28 @@ public class MLPTicTacToe {
 
         int winner = gs.getWinner();
         int player = 1;
-        if(true || winner != 0) {
-            Iterator it = featureArray.iterator();
-            while (it.hasNext()) {
-                double[] labelData = new double[2];
-                if (winner == player) {
-                    labelData[0] = 1.0;
-                    labelData[1] = 0.0;
-                } else if (winner == - player) {
-                    labelData[0] = 0.0;
-                    labelData[1] = 1.0;
-                } else {
-                    labelData[0] = 0.5;
-                    labelData[1] = 0.5;
-                }
-                INDArray label = Nd4j.create(labelData, new int[]{1, 2});
-                DataSet ds = new DataSet((INDArray) it.next(), label);
-                //if(player == 1) {
-                    dsList.add(ds);
-                //}
-                player *= -1;
+
+        for (INDArray feature: featureArray) {
+            double[] labelData = new double[2];
+            if (winner == player) {
+                labelData[0] = 1.0;
+                labelData[1] = 0.0;
+            } else if (winner == - player) {
+                labelData[0] = 0.0;
+                labelData[1] = 1.0;
+            } else {
+                labelData[0] = 0.5;
+                labelData[1] = 0.5;
             }
+            INDArray label = Nd4j.create(labelData, new int[]{1, 2});
+            DataSet ds = new DataSet(feature, label);
+            if(player == 1 && policy1.isToBeTrained()) {
+                dsList.add(ds);
+            }
+            if(player == -1 && policy2.isToBeTrained()) {
+                dsList.add(ds);
+            }
+            player *= -1;
         }
 
         return dsList;
@@ -233,13 +234,21 @@ public class MLPTicTacToe {
 
         for (int i = 0; i < nSamples; i++) {
 
-            List<DataSet> ds = playGame(playerPolicy, opponentPolicy);
+            List<DataSet> ds = null;
+
+            if(i % 2 == 0) {
+                ds = playGame(playerPolicy, opponentPolicy);
+            } else {
+                ds = playGame(opponentPolicy, playerPolicy);
+            }
+
             listDs.addAll(ds);
         }
 
         System.out.println("listDs.size() = " + listDs.size());
         Collections.shuffle(listDs, new Random());
 
+        // Randomly choose 15% of the data set, and discard the rest.
         List<DataSet> listDs2 = new ArrayList<DataSet>();
         Iterator it = listDs.iterator();
         int cnt = 0;
