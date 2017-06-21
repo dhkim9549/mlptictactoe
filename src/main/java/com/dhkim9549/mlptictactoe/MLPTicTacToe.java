@@ -103,7 +103,7 @@ public class MLPTicTacToe {
     public static MultiLayerNetwork getInitModel() throws Exception {
 
         int seed = 123;
-        double learningRate = 0.025;
+        double learningRate = 0.0025;
 
         int numInputs = 9 * 3;
         int numOutputs = 2;
