@@ -31,8 +31,8 @@ public class MLPTicTacToe {
 
         int batchSize = 32;
 
-        //MultiLayerNetwork model = getInitModel();
-        MultiLayerNetwork model = readModelFromFile("/down/ttt_model_310_2.zip");
+        MultiLayerNetwork model = getInitModel();
+        //MultiLayerNetwork model = readModelFromFile("/down/ttt_model_310_2.zip");
         //MultiLayerNetwork oponentModel = readModelFromFile("/down/ttt_model_200_2.zip");
 
         NeuralNetConfiguration config = model.conf();
@@ -103,7 +103,7 @@ public class MLPTicTacToe {
     public static MultiLayerNetwork getInitModel() throws Exception {
 
         int seed = 123;
-        double learningRate = 0.00025;
+        double learningRate = 0.025;
 
         int numInputs = 9 * 3;
         int numOutputs = 2;
@@ -228,7 +228,7 @@ public class MLPTicTacToe {
 
     private static List<DataSet> getTrainingData(Policy playerPolicy, Policy opponentPolicy) {
 
-        int nSamples = 5000;
+        int nSamples = 100000;
 
         List<DataSet> listDs = new ArrayList<>();
 
@@ -246,9 +246,9 @@ public class MLPTicTacToe {
         }
 
         System.out.println("listDs.size() = " + listDs.size());
-        Collections.shuffle(listDs, new Random());
 
         // Randomly choose 15% of the data set, and discard the rest.
+        Collections.shuffle(listDs, new Random());
         List<DataSet> listDs2 = new ArrayList<DataSet>();
         Iterator it = listDs.iterator();
         int cnt = 0;
