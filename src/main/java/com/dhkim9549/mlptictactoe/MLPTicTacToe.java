@@ -167,7 +167,7 @@ public class MLPTicTacToe {
     }
 
     private static int numOfWins = 0;
-    private static int numOfLoses = 0;
+    private static int numOfLosses = 0;
     private static int numOfPlays = 0;
 
     private static List<DataSet> playGame(Policy policy1, Policy policy2) {
@@ -207,10 +207,19 @@ public class MLPTicTacToe {
 */
 
         numOfPlays++;
-        if(gs.getWinner() == 1) {
-            numOfWins++;
-        } else if(gs.getWinner() == -1) {
-            numOfLoses++;
+        if(policy1.isToBeTrained()) {
+            if (gs.getWinner() == 1) {
+                numOfWins++;
+            } else if (gs.getWinner() == -1) {
+                numOfLosses++;
+            }
+        }
+        if(policy2.isToBeTrained()) {
+            if (gs.getWinner() == 1) {
+                numOfLosses++;
+            } else if (gs.getWinner() == -1) {
+                numOfWins++;
+            }
         }
 
         int winner = gs.getWinner();
@@ -267,7 +276,7 @@ public class MLPTicTacToe {
         System.out.println("listDs.size() = " + listDs.size());
 
         System.out.println("Winning rate = " + (double)numOfWins / (double)numOfPlays);
-        System.out.println("Losing rate = " + (double)numOfLoses / (double)numOfPlays);
+        System.out.println("Losing rate = " + (double)numOfLosses / (double)numOfPlays);
 
         return listDs;
     }
