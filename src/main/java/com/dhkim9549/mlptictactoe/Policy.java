@@ -35,21 +35,6 @@ public class Policy {
      */
     public int chooseMove(GameState gs, boolean printOption) {
 
-/*
-        if(nextPlayer == -1) {
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-            try {
-                System.out.println("gs = " + this);
-                System.out.print("Enter Integer:");
-                int aa = Integer.parseInt(br.readLine());
-                System.out.println("gs = " + this);
-                return aa;
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-*/
-
         int a = -1;
         Random rnd = new Random();
 
@@ -89,6 +74,8 @@ public class Policy {
         if(printOption) {
             System.out.println("valueArray = " + valueArray);
         }
+
+        //System.out.println("gs ***" + gs);
 
         return a;
     }

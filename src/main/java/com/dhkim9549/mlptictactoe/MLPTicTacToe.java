@@ -1,7 +1,5 @@
 package com.dhkim9549.mlptictactoe;
 
-import java.io.*;
-import java.util.*;
 import org.deeplearning4j.datasets.iterator.impl.ListDataSetIterator;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
@@ -20,6 +18,9 @@ import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
+import java.io.File;
+import java.util.*;
+
 /**
  *  Tic Tac Toe Reinforcement Learning Example
  *
@@ -31,8 +32,8 @@ public class MLPTicTacToe {
 
         int batchSize = 32;
 
-        MultiLayerNetwork model = getInitModel();
-        //MultiLayerNetwork model = readModelFromFile("/down/ttt_model_310_2.zip");
+        //MultiLayerNetwork model = getInitModel();
+        MultiLayerNetwork model = readModelFromFile("/down/ttt_model_120_2.zip");
         //MultiLayerNetwork oponentModel = readModelFromFile("/down/ttt_model_200_2.zip");
 
         NeuralNetConfiguration config = model.conf();
@@ -71,10 +72,24 @@ public class MLPTicTacToe {
             // Evaluate 3
             {
                 GameState gs = new GameState();
-                gs.playMove(1);
-                gs.playMove(2);
-                gs.playMove(4);
                 gs.playMove(0);
+                gs.playMove(4);
+                gs.playMove(1);
+
+                INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
+                System.out.println("output = " + output);
+
+                Policy policy = new Policy(model, 0.0);
+                int a = policy.chooseMove(gs, true);
+                System.out.println("a = " + a);
+            }
+
+            // Evaluate 4
+            {
+                GameState gs = new GameState();
+                gs.playMove(4);
+                gs.playMove(2);
+                gs.playMove(1);
 
                 INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
                 System.out.println("output = " + output);
@@ -87,7 +102,8 @@ public class MLPTicTacToe {
             System.out.println("Training count i = " + i);
 
             //Load the training data:
-            List<DataSet> listDs = getTrainingData(new Policy(model, 1.0, true), new Policy(model, 1.0, false));
+            List<DataSet> listDs = getTrainingData(new Policy(model, 0.80, true), new Policy(model, 0.80, false));
+            //List<DataSet> listDs = getTrainingData(new Policy(model, 0.1, true), new HumanPolicy());
 
             DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
             model = train(model, trainIter);
@@ -228,7 +244,7 @@ public class MLPTicTacToe {
 
     private static List<DataSet> getTrainingData(Policy playerPolicy, Policy opponentPolicy) {
 
-        int nSamples = 100000;
+        int nSamples = 10000;
 
         List<DataSet> listDs = new ArrayList<>();
 
