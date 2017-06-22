@@ -39,7 +39,7 @@ public class MLPTicTacToe {
         NeuralNetConfiguration config = model.conf();
         System.out.println("config = " + config);
 
-        for(int i = 1; i < 10000; i++) {
+        for(int i = 121; i < 10000; i++) {
 
             // Evaluate
             {
@@ -102,7 +102,7 @@ public class MLPTicTacToe {
             System.out.println("Training count i = " + i);
 
             //Load the training data:
-            List<DataSet> listDs = getTrainingData(new Policy(model, 0.80, true), new Policy(model, 0.80, false));
+            List<DataSet> listDs = getTrainingData(new Policy(model, 0.00, true), new Policy(model, 1.00, false));
             //List<DataSet> listDs = getTrainingData(new Policy(model, 0.1, true), new HumanPolicy());
 
             DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
@@ -246,6 +246,8 @@ public class MLPTicTacToe {
 
         int nSamples = 10000;
 
+        Random rnd = new Random();
+
         List<DataSet> listDs = new ArrayList<>();
 
         for (int i = 0; i < nSamples; i++) {
@@ -258,25 +260,16 @@ public class MLPTicTacToe {
                 ds = playGame(opponentPolicy, playerPolicy);
             }
 
-            listDs.addAll(ds);
+            // Randomly choose one data set from 'ds' and discard the rest.
+            listDs.add(ds.get(rnd.nextInt(ds.size())));
         }
 
         System.out.println("listDs.size() = " + listDs.size());
 
-        // Randomly choose 15% of the data set, and discard the rest.
-        Collections.shuffle(listDs, new Random());
-        List<DataSet> listDs2 = new ArrayList<DataSet>();
-        Iterator it = listDs.iterator();
-        int cnt = 0;
-        while(it.hasNext() && cnt < listDs.size() * 0.15) {
-            listDs2.add((DataSet)it.next());
-            cnt++;
-        }
-        System.out.println("listDs2.size() = " + listDs2.size());
         System.out.println("Winning rate = " + (double)numOfWins / (double)numOfPlays);
         System.out.println("Losing rate = " + (double)numOfLoses / (double)numOfPlays);
 
-        return listDs2;
+        return listDs;
     }
 
     public static MultiLayerNetwork readModelFromFile(String fileName) throws Exception {
