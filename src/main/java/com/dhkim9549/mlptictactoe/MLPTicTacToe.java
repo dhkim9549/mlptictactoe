@@ -257,7 +257,9 @@ public class MLPTicTacToe {
 
         Random rnd = new Random();
 
-        List<DataSet> listDs = new ArrayList<>();
+        List<DataSet> winDsList = new ArrayList<>();
+        List<DataSet> drawDsList = new ArrayList<>();
+        List<DataSet> loseDsList = new ArrayList<>();
 
         for (int i = 0; i < nSamples; i++) {
 
@@ -270,13 +272,31 @@ public class MLPTicTacToe {
             }
 
             // Randomly choose one data set from 'ds' and discard the rest.
-            listDs.add(ds.get(rnd.nextInt(ds.size())));
+            Double label = ds.get(0).getLabels().getDouble(0);
+            if(label == 1.0) {
+                winDsList.add(ds.get(rnd.nextInt(ds.size())));
+            } else if(label == 0.0) {
+                loseDsList.add(ds.get(rnd.nextInt(ds.size())));
+            } else {
+                drawDsList.add(ds.get(rnd.nextInt(ds.size())));
+            }
         }
-
-        System.out.println("listDs.size() = " + listDs.size());
 
         System.out.println("Winning rate = " + (double)numOfWins / (double)numOfPlays);
         System.out.println("Losing rate = " + (double)numOfLosses / (double)numOfPlays);
+
+        List<DataSet> listDs = new ArrayList<>();
+        Iterator winIt = winDsList.iterator();
+        Iterator drawIt = drawDsList.iterator();
+        Iterator loseIt = loseDsList.iterator();
+
+        while(winIt.hasNext() && drawIt.hasNext() && loseIt.hasNext()) {
+            listDs.add((DataSet)winIt.next());
+            listDs.add((DataSet)drawIt.next());
+            listDs.add((DataSet)loseIt.next());
+        }
+
+        System.out.println("listDs.size() = " + listDs.size());
 
         return listDs;
     }
