@@ -39,7 +39,7 @@ public class MLPTicTacToe {
         NeuralNetConfiguration config = model.conf();
         System.out.println("config = " + config);
 
-        for(int i = 1; i < 10000; i++) {
+        for(int i = 21; i < 10000; i++) {
 
             // Evaluate
             {
@@ -101,9 +101,9 @@ public class MLPTicTacToe {
 
             System.out.println("Training count i = " + i);
 
-            //Load the training data:
-            //List<DataSet> listDs = getTrainingData(new Policy(model, 0.5, true), new SupervisedPolicy());
-            List<DataSet> listDs = getTrainingData(new HumanPolicy(), new SupervisedPolicy());
+            // Load the training data.
+            List<DataSet> listDs = getTrainingData(new Policy(model, 0.5, true), new SupervisedPolicy());
+            //List<DataSet> listDs = getTrainingData(new HumanPolicy(), new SupervisedPolicy());
 
             DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
             model = train(model, trainIter);
@@ -192,14 +192,18 @@ public class MLPTicTacToe {
             featureArray.add(gs.getFeature(- gs.getNextPlayer()));
         }
 
+/*
         if(gs.getWinner() == -1) {
             System.out.println("LOSE **************");
             System.out.println("moveList = " + moveList);
         }
+*/
 
 
+/*
         System.out.println("gs = " + gs);
         System.out.println("gggggggggggggggggggggggg\n\n");
+*/
 
         numOfPlays++;
         if(policy1.isToBeTrained()) {
@@ -248,7 +252,7 @@ public class MLPTicTacToe {
 
     private static List<DataSet> getTrainingData(Policy playerPolicy, Policy opponentPolicy) {
 
-        int nSamples = 100000;
+        int nSamples = 10000;
 
         Random rnd = new Random();
 
