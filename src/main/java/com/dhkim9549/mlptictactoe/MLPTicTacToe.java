@@ -252,7 +252,7 @@ public class MLPTicTacToe {
 
     private static List<DataSet> getTrainingData(Policy playerPolicy, Policy opponentPolicy) {
 
-        int nSamples = 10000;
+        int nSamples = 100000;
 
         Random rnd = new Random();
 
