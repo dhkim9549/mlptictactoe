@@ -120,6 +120,8 @@ public class GameState {
      */
     public boolean isOver() {
 
+        winner = 0;
+
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 3; j++) {
 
@@ -215,6 +217,7 @@ public class GameState {
 
     /**
      * Returns the winner of the game
+     * isOver() must be called before this method is called.
      * @return
      */
     public int getWinner() {

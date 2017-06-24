@@ -33,13 +33,13 @@ public class MLPTicTacToe {
         int batchSize = 32;
 
         //MultiLayerNetwork model = getInitModel();
-        MultiLayerNetwork model = readModelFromFile("/down/ttt_model_120_2.zip");
-        //MultiLayerNetwork oponentModel = readModelFromFile("/down/ttt_model_200_2.zip");
+        MultiLayerNetwork model = readModelFromFile("/down/ttt_model_20_RL_half_e.zip");
+        MultiLayerNetwork opponentModel = readModelFromFile("/down/ttt_model_120_2.zip");
 
         NeuralNetConfiguration config = model.conf();
         System.out.println("config = " + config);
 
-        for(int i = 121; i < 10000; i++) {
+        for(int i = 1; i < 10000; i++) {
 
             // Evaluate
             {
@@ -102,12 +102,11 @@ public class MLPTicTacToe {
             System.out.println("Training count i = " + i);
 
             //Load the training data:
-            List<DataSet> listDs = getTrainingData(new Policy(model, 0.00, true), new Policy(model, 1.00, false));
-            //List<DataSet> listDs = getTrainingData(new Policy(model, 0.1, true), new HumanPolicy());
+            //List<DataSet> listDs = getTrainingData(new Policy(model, 0.5, true), new SupervisedPolicy());
+            List<DataSet> listDs = getTrainingData(new HumanPolicy(), new SupervisedPolicy());
 
             DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
             model = train(model, trainIter);
-            System.out.println("\n\n");
             System.out.println("model = " + model);
 
             if(i % 10 == 0) {
@@ -193,18 +192,14 @@ public class MLPTicTacToe {
             featureArray.add(gs.getFeature(- gs.getNextPlayer()));
         }
 
-/*
         if(gs.getWinner() == -1) {
             System.out.println("LOSE **************");
             System.out.println("moveList = " + moveList);
         }
-*/
 
 
-/*
         System.out.println("gs = " + gs);
         System.out.println("gggggggggggggggggggggggg\n\n");
-*/
 
         numOfPlays++;
         if(policy1.isToBeTrained()) {
@@ -253,7 +248,7 @@ public class MLPTicTacToe {
 
     private static List<DataSet> getTrainingData(Policy playerPolicy, Policy opponentPolicy) {
 
-        int nSamples = 10000;
+        int nSamples = 100000;
 
         Random rnd = new Random();
 
@@ -284,6 +279,11 @@ public class MLPTicTacToe {
 
         System.out.println("Winning rate = " + (double)numOfWins / (double)numOfPlays);
         System.out.println("Losing rate = " + (double)numOfLosses / (double)numOfPlays);
+        System.out.println("\n");
+
+        numOfWins = 0;
+        numOfLosses = 0;
+        numOfPlays = 0;
 
         List<DataSet> listDs = new ArrayList<>();
         Iterator winIt = winDsList.iterator();
@@ -295,6 +295,13 @@ public class MLPTicTacToe {
             listDs.add((DataSet)drawIt.next());
             listDs.add((DataSet)loseIt.next());
         }
+
+        listDs.clear();
+        listDs.addAll(winDsList);
+        listDs.addAll(drawDsList);
+        listDs.addAll(loseDsList);
+
+        Collections.shuffle(listDs);
 
         System.out.println("listDs.size() = " + listDs.size());
 
