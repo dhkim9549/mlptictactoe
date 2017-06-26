@@ -39,7 +39,7 @@ public class MLPTicTacToe {
         NeuralNetConfiguration config = model.conf();
         System.out.println("config = " + config);
 
-        for(int i = 91; i < 10000; i++) {
+        for(int i = 381; i < 10000; i++) {
 
             // Evaluate
             {
