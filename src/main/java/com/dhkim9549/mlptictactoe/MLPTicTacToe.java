@@ -33,7 +33,7 @@ public class MLPTicTacToe {
         int batchSize = 32;
 
         //MultiLayerNetwork model = getInitModel();
-        MultiLayerNetwork model = readModelFromFile("/down/ttt_model_90.zip");
+        MultiLayerNetwork model = readModelFromFile("/down/ttt_model_380.zip");
         //MultiLayerNetwork opponentModel = readModelFromFile("/down/ttt_model_120_2.zip");
 
         NeuralNetConfiguration config = model.conf();
