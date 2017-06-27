@@ -24,8 +24,8 @@ import java.util.*;
 /**
  *  Tic Tac Toe Reinforcement Learning
  *
- *  for i <= 300 do supervised learning with decreasing epsilon
- *  for i >= 301 do reinforcement learning against the opponent pool
+ *  for i <= 300 do a supervised learning with decreasing epsilon
+ *  for i >= 301 do a reinforcement learning against the opponent pool
  *
  * @author Dong-Hyun Kim
  */
@@ -47,8 +47,6 @@ public class MLPTicTacToe {
         System.out.println("config = " + config);
 
         for(int i = 301; i < 10000; i++) {
-
-            evaluateModel(model);
 
             System.out.println("Training count i = " + i);
 
@@ -73,9 +71,10 @@ public class MLPTicTacToe {
             model = train(model, trainIter);
             System.out.println("model = " + model);
 
-            evaluate(new Policy(model, 0.0, true), new SupervisedPolicy());
-
             opponentPool.add(new Policy(model, 0.0));
+
+            evaluate(new Policy(model, 0.0, true), new SupervisedPolicy());
+            evaluateModel(model);
 
             if(i % 10 == 0) {
                 writeModelToFile(model, "/down/ttt_model_" + i + ".zip");
@@ -204,6 +203,7 @@ public class MLPTicTacToe {
 
     private static List<DataSet> getTrainingData(Policy playerPolicy, ArrayList<Policy> opponentPool) {
 
+        System.out.println("Getting training data...");
         System.out.println("opponentPool.size() = " + opponentPool.size());
 
         int nSamples = 100000;
@@ -213,6 +213,10 @@ public class MLPTicTacToe {
         List<DataSet> listDs = new ArrayList<>();
 
         for (int i = 0; i < nSamples; i++) {
+
+            if(i % 10000 == 0) {
+                System.out.println("Getting training data... i = " + i);
+            }
 
             // Pick a opponent randomly from the opponent pool.
             Policy opponentPolicy = opponentPool.get(rnd.nextInt(opponentPool.size()));
@@ -232,6 +236,7 @@ public class MLPTicTacToe {
         Collections.shuffle(listDs);
 
         System.out.println("listDs.size() = " + listDs.size());
+        System.out.println("Getting training complete.");
 
         return listDs;
     }
@@ -338,6 +343,8 @@ public class MLPTicTacToe {
     }
 
     private static void evaluate(Policy playerPolicy, Policy opponentPolicy) {
+
+        System.out.println("Evaluating...");
 
         int nSamples = 10000;
 
