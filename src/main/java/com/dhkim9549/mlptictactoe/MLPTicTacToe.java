@@ -75,7 +75,7 @@ public class MLPTicTacToe {
             System.out.println("model = " + model);
 
             if(i >= 777301) {
-                opponentPool.add(new Policy(model, 0.0));
+                opponentPool.add(new Policy(model, 0.1));
             }
 
             if(i % 10 == 0) {
@@ -208,7 +208,7 @@ public class MLPTicTacToe {
         System.out.println("Getting training data...");
         System.out.println("opponentPool.size() = " + opponentPool.size());
 
-        int nSamples = 30000;
+        int nSamples = 100000;
 
         Random rnd = new Random();
 
