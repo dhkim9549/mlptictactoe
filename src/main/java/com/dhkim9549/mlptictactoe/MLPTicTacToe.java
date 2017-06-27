@@ -38,7 +38,7 @@ public class MLPTicTacToe {
         int batchSize = 32;
 
         //MultiLayerNetwork model = getInitModel();
-        MultiLayerNetwork model = readModelFromFile("/down/ttt_model_200.zip");
+        MultiLayerNetwork model = readModelFromFile("/down/ttt_model_300_2.zip");
         //MultiLayerNetwork opponentModel = readModelFromFile("/down/ttt_model_120_2.zip");
 
         ArrayList<Policy> opponentPool = new ArrayList<>();
@@ -49,6 +49,9 @@ public class MLPTicTacToe {
         for(int i = 301; i < 10000; i++) {
 
             System.out.println("Training count i = " + i);
+
+            evaluate(new Policy(model, 0.0, true), new SupervisedPolicy());
+            evaluateModel(model);
 
             double epsilon = Math.max(0.1, 1.0 - (double)i / 100.0);
 
@@ -72,9 +75,6 @@ public class MLPTicTacToe {
             System.out.println("model = " + model);
 
             opponentPool.add(new Policy(model, 0.0));
-
-            evaluate(new Policy(model, 0.0, true), new SupervisedPolicy());
-            evaluateModel(model);
 
             if(i % 10 == 0) {
                 writeModelToFile(model, "/down/ttt_model_" + i + ".zip");
