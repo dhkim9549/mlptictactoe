@@ -46,7 +46,7 @@ public class MLPTicTacToe {
         NeuralNetConfiguration config = model.conf();
         System.out.println("config = " + config);
 
-        for(int i = 301; i < 10000; i++) {
+        for(int i = 1; i < 10000; i++) {
 
             System.out.println("Training count i = " + i);
 
@@ -87,7 +87,7 @@ public class MLPTicTacToe {
     public static MultiLayerNetwork getInitModel() throws Exception {
 
         int seed = 123;
-        double learningRate = 0.0025;
+        double learningRate = 0.00025;
 
         int numInputs = 9 * 3;
         int numOutputs = 2;
