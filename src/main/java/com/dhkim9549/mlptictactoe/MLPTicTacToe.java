@@ -22,7 +22,10 @@ import java.io.File;
 import java.util.*;
 
 /**
- *  Tic Tac Toe Reinforcement Learning Example
+ *  Tic Tac Toe Reinforcement Learning
+ *
+ *  for i <= 300 do supervised learning with decreasing epsilon
+ *  for i >= 301 do reinforcement learning against the opponent pool
  *
  * @author Dong-Hyun Kim
  */
@@ -30,83 +33,39 @@ public class MLPTicTacToe {
 
     public static void main(String[] args) throws Exception {
 
-        System.out.println("*** aaa ***");
+        System.out.println("*** ccc a ***");
 
         int batchSize = 32;
 
         //MultiLayerNetwork model = getInitModel();
-        MultiLayerNetwork model = readModelFromFile("/down/ttt_model_380.zip");
+        MultiLayerNetwork model = readModelFromFile("/down/ttt_model_200.zip");
         //MultiLayerNetwork opponentModel = readModelFromFile("/down/ttt_model_120_2.zip");
+
+        ArrayList<Policy> opponentPool = new ArrayList<>();
 
         NeuralNetConfiguration config = model.conf();
         System.out.println("config = " + config);
 
-        for(int i = 381; i < 10000; i++) {
+        for(int i = 201; i < 10000; i++) {
 
-            // Evaluate
-            {
-                GameState gs = new GameState();
-
-                INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
-                System.out.println("output = " + output);
-
-                Policy policy = new Policy(model, 0.0);
-                int a = policy.chooseMove(gs, true);
-                System.out.println("a = " + a);
-            }
-
-            // Evaluate 2
-            {
-                GameState gs = new GameState();
-                gs.playMove(1);
-                gs.playMove(2);
-                gs.playMove(4);
-                gs.playMove(5);
-
-                INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
-                System.out.println("output = " + output);
-
-                Policy policy = new Policy(model, 0.0);
-                int a = policy.chooseMove(gs, true);
-                System.out.println("a = " + a);
-            }
-
-            // Evaluate 3
-            {
-                GameState gs = new GameState();
-                gs.playMove(0);
-                gs.playMove(4);
-                gs.playMove(1);
-
-                INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
-                System.out.println("output = " + output);
-
-                Policy policy = new Policy(model, 0.0);
-                int a = policy.chooseMove(gs, true);
-                System.out.println("a = " + a);
-            }
-
-            // Evaluate 4
-            {
-                GameState gs = new GameState();
-                gs.playMove(2);
-                gs.playMove(4);
-                gs.playMove(3);
-
-                INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
-                System.out.println("output = " + output);
-
-                Policy policy = new Policy(model, 0.0);
-                int a = policy.chooseMove(gs, true);
-                System.out.println("a = " + a);
-            }
+            evaluateModel(model);
 
             System.out.println("Training count i = " + i);
 
             double epsilon = Math.max(0.1, 1.0 - (double)i / 100.0);
 
+            if(i <= 300) {
+                if(opponentPool.isEmpty()) {
+                    opponentPool.add(new SupervisedPolicy());
+                }
+            } else if(i >= 301) {
+                if(opponentPool.isEmpty()) {
+                    opponentPool = loadOpponentPoolFromFiles();
+                }
+            }
+
             // Load the training data.
-            List<DataSet> listDs = getTrainingData(new Policy(model, epsilon, true), new SupervisedPolicy());
+            List<DataSet> listDs = getTrainingData(new Policy(model, epsilon, true), opponentPool);
             //List<DataSet> listDs = getTrainingData(new Policy(model, 0.0, true), new HumanPolicy());
             //List<DataSet> listDs = getTrainingData(new HumanPolicy(), new SupervisedPolicy());
 
@@ -275,15 +234,18 @@ public class MLPTicTacToe {
 
     }
 
-    private static List<DataSet> getTrainingData(Policy playerPolicy, Policy opponentPolicy) {
+    private static List<DataSet> getTrainingData(Policy playerPolicy, ArrayList<Policy> opponentPool) {
 
-        int nSamples = 100000;
+        int nSamples = 10000;
 
         Random rnd = new Random();
 
         List<DataSet> listDs = new ArrayList<>();
 
         for (int i = 0; i < nSamples; i++) {
+
+            // Pick a opponent randomly from the opponent pool.
+            Policy opponentPolicy = opponentPool.get(rnd.nextInt(opponentPool.size()));
 
             List<DataSet> ds = null;
 
@@ -328,5 +290,80 @@ public class MLPTicTacToe {
 
         System.out.println("Serializing model complete.");
 
+    }
+
+    public static void evaluateModel(MultiLayerNetwork model) {
+
+        // Evaluate
+        {
+            GameState gs = new GameState();
+
+            INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
+            System.out.println("output = " + output);
+
+            Policy policy = new Policy(model, 0.0);
+            int a = policy.chooseMove(gs, true);
+            System.out.println("a = " + a);
+        }
+
+        // Evaluate 2
+        {
+            GameState gs = new GameState();
+            gs.playMove(1);
+            gs.playMove(2);
+            gs.playMove(4);
+            gs.playMove(5);
+
+            INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
+            System.out.println("output = " + output);
+
+            Policy policy = new Policy(model, 0.0);
+            int a = policy.chooseMove(gs, true);
+            System.out.println("a = " + a);
+        }
+
+        // Evaluate 3
+        {
+            GameState gs = new GameState();
+            gs.playMove(0);
+            gs.playMove(4);
+            gs.playMove(1);
+
+            INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
+            System.out.println("output = " + output);
+
+            Policy policy = new Policy(model, 0.0);
+            int a = policy.chooseMove(gs, true);
+            System.out.println("a = " + a);
+        }
+
+        // Evaluate 4
+        {
+            GameState gs = new GameState();
+            gs.playMove(2);
+            gs.playMove(4);
+            gs.playMove(3);
+
+            INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
+            System.out.println("output = " + output);
+
+            Policy policy = new Policy(model, 0.0);
+            int a = policy.chooseMove(gs, true);
+            System.out.println("a = " + a);
+        }
+    }
+
+    public static ArrayList<Policy> loadOpponentPoolFromFiles() throws Exception {
+
+        ArrayList<Policy> pool = new ArrayList<>();
+
+        for(int i = 100; i <= 380; i += 10) {
+            String fileName = "/down/ttt_model_" + i + ".zip";
+            MultiLayerNetwork model = readModelFromFile(fileName);
+            Policy p = new Policy(model, 0.0);
+            pool.add(p);
+        }
+
+        return pool;
     }
 }
