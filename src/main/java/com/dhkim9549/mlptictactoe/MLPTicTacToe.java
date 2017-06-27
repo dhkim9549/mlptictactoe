@@ -206,7 +206,7 @@ public class MLPTicTacToe {
         System.out.println("Getting training data...");
         System.out.println("opponentPool.size() = " + opponentPool.size());
 
-        int nSamples = 300000;
+        int nSamples = 30000;
 
         Random rnd = new Random();
 
