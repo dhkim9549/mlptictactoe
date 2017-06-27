@@ -73,7 +73,7 @@ public class MLPTicTacToe {
 
             opponentPool.add(new Policy(model, 0.0));
 
-            evaluate(new Policy(model, 0.1, true), new SupervisedPolicy());
+            evaluate(new Policy(model, 0.0, true), new SupervisedPolicy());
             evaluateModel(model);
 
             if(i % 10 == 0) {
