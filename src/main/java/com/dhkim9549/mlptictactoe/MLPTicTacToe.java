@@ -335,7 +335,7 @@ public class MLPTicTacToe {
         for(int i = 100; i <= 300; i += 10) {
             String fileName = "/down/ttt_model_" + i + ".zip";
             MultiLayerNetwork model = readModelFromFile(fileName);
-            Policy p = new Policy(model, 0.0);
+            Policy p = new Policy(model, 0.1);
             pool.add(p);
         }
 
