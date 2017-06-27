@@ -55,11 +55,11 @@ public class MLPTicTacToe {
 
             double epsilon = Math.max(0.1, 1.0 - (double)i / 100.0);
 
-            if(i <= 300) {
+            if(i <= 7300) {
                 if(opponentPool.isEmpty()) {
                     opponentPool.add(new SupervisedPolicy());
                 }
-            } else if(i >= 301) {
+            } else if(i >= 7301) {
                 if(opponentPool.isEmpty()) {
                     opponentPool = loadOpponentPoolFromFiles();
                 }
