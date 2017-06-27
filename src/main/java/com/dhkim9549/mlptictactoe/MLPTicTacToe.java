@@ -75,6 +75,8 @@ public class MLPTicTacToe {
 
             evaluate(new Policy(model, 0.0, true), new SupervisedPolicy());
 
+            opponentPool.add(new Policy(model, 0.0));
+
             if(i % 10 == 0) {
                 writeModelToFile(model, "/down/ttt_model_" + i + ".zip");
             }
@@ -200,43 +202,11 @@ public class MLPTicTacToe {
         return dsList;
     }
 
-    private static void evaluate(Policy playerPolicy, Policy opponentPolicy) {
-
-        int nSamples = 100000;
-
-        int numOfWins = 0;
-        int numOfLosses = 0;
-        int numOfPlays = 0;
-
-        for (int i = 0; i < nSamples; i++) {
-
-            List<DataSet> ds = null;
-
-            if(i % 2 == 0) {
-                ds = playGame(playerPolicy, opponentPolicy);
-            } else {
-                ds = playGame(opponentPolicy, playerPolicy);
-            }
-
-            Double label = ds.get(0).getLabels().getDouble(0);
-            if(label == 1.0) {
-                numOfWins++;
-            } else if(label == 0.0) {
-                numOfLosses++;
-            }
-            numOfPlays++;
-        }
-
-        System.out.println("*** Evaluation Result ***");
-        System.out.println("Winning rate = " + (double)numOfWins / (double)numOfPlays);
-        System.out.println("Losing rate = " + (double)numOfLosses / (double)numOfPlays);
-        System.out.println("\n");
-
-    }
-
     private static List<DataSet> getTrainingData(Policy playerPolicy, ArrayList<Policy> opponentPool) {
 
-        int nSamples = 10000;
+        System.out.println("opponentPool.size() = " + opponentPool.size());
+
+        int nSamples = 100000;
 
         Random rnd = new Random();
 
@@ -357,7 +327,7 @@ public class MLPTicTacToe {
 
         ArrayList<Policy> pool = new ArrayList<>();
 
-        for(int i = 100; i <= 380; i += 10) {
+        for(int i = 100; i <= 300; i += 10) {
             String fileName = "/down/ttt_model_" + i + ".zip";
             MultiLayerNetwork model = readModelFromFile(fileName);
             Policy p = new Policy(model, 0.0);
@@ -365,5 +335,39 @@ public class MLPTicTacToe {
         }
 
         return pool;
+    }
+
+    private static void evaluate(Policy playerPolicy, Policy opponentPolicy) {
+
+        int nSamples = 10000;
+
+        int numOfWins = 0;
+        int numOfLosses = 0;
+        int numOfPlays = 0;
+
+        for (int i = 0; i < nSamples; i++) {
+
+            List<DataSet> ds = null;
+
+            if(i % 2 == 0) {
+                ds = playGame(playerPolicy, opponentPolicy);
+            } else {
+                ds = playGame(opponentPolicy, playerPolicy);
+            }
+
+            Double label = ds.get(0).getLabels().getDouble(0);
+            if(label == 1.0) {
+                numOfWins++;
+            } else if(label == 0.0) {
+                numOfLosses++;
+            }
+            numOfPlays++;
+        }
+
+        System.out.println("*** Evaluation Result ***");
+        System.out.println("Winning rate = " + (double)numOfWins / (double)numOfPlays);
+        System.out.println("Losing rate = " + (double)numOfLosses / (double)numOfPlays);
+        System.out.println("\n");
+
     }
 }
