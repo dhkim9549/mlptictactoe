@@ -30,6 +30,8 @@ public class MLPTicTacToe {
 
     public static void main(String[] args) throws Exception {
 
+        System.out.println("*** aaa ***");
+
         int batchSize = 32;
 
         //MultiLayerNetwork model = getInitModel();
