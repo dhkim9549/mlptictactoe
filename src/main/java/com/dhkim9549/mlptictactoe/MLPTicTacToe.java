@@ -46,7 +46,7 @@ public class MLPTicTacToe {
         NeuralNetConfiguration config = model.conf();
         System.out.println("config = " + config);
 
-        for(int i = 201; i < 10000; i++) {
+        for(int i = 301; i < 10000; i++) {
 
             evaluateModel(model);
 
@@ -202,7 +202,7 @@ public class MLPTicTacToe {
 
     private static void evaluate(Policy playerPolicy, Policy opponentPolicy) {
 
-        int nSamples = 10000;
+        int nSamples = 100000;
 
         int numOfWins = 0;
         int numOfLosses = 0;
