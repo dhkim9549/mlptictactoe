@@ -37,8 +37,8 @@ public class MLPTicTacToe {
 
         int batchSize = 32;
 
-        //MultiLayerNetwork model = getInitModel();
-        MultiLayerNetwork model = readModelFromFile("/down/ttt_model_300_2.zip");
+        MultiLayerNetwork model = getInitModel();
+        //MultiLayerNetwork model = readModelFromFile("/down/ttt_model_300_2.zip");
         //MultiLayerNetwork opponentModel = readModelFromFile("/down/ttt_model_120_2.zip");
 
         ArrayList<Policy> opponentPool = new ArrayList<>();
