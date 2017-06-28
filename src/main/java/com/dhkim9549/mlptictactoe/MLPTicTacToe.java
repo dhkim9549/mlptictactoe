@@ -49,6 +49,7 @@ public class MLPTicTacToe {
         for(int i = 1; i < 10000; i++) {
 
             System.out.println("Training count i = " + i);
+            System.out.println(new Date());
 
             evaluate(new Policy(model, 0.0, true), new SupervisedPolicy());
             evaluateModel(model);
