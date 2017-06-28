@@ -49,7 +49,7 @@ public class MLPTicTacToe {
         for(int i = 1; i < 10000; i++) {
 
             System.out.println("Training count i = " + i);
-            System.out.println(new Date());
+            System.out.println("Date = " + new Date());
 
             evaluate(new Policy(model, 0.0, true), new SupervisedPolicy());
             evaluateModel(model);
@@ -80,7 +80,7 @@ public class MLPTicTacToe {
             }
 
             if(i % 10 == 0) {
-                writeModelToFile(model, "/down/ttt_model_" + i + ".zip");
+                writeModelToFile(model, "/down/ttt_model_LR_0_0025_" + i + ".zip");
             }
         }
     }
@@ -88,7 +88,7 @@ public class MLPTicTacToe {
     public static MultiLayerNetwork getInitModel() throws Exception {
 
         int seed = 123;
-        double learningRate = 0.00025;
+        double learningRate = 0.0025;
 
         int numInputs = 9 * 3;
         int numOutputs = 2;
