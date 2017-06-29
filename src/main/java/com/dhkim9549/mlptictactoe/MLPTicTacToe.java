@@ -87,7 +87,7 @@ public class MLPTicTacToe {
                 opponentPool.add(new Policy(model, 0.1));
             }
 
-            if(i % 1000 == 0) {
+            if(i % 10000 == 0) {
                 writeModelToFile(model, "/down/ttt_model_" + args[0] + "_" + i + ".zip");
             }
         }
