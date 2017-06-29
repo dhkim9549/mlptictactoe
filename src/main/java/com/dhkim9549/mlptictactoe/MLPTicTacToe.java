@@ -134,7 +134,7 @@ public class MLPTicTacToe {
 
     public static MultiLayerNetwork train(MultiLayerNetwork model, DataSetIterator trainIter) throws Exception {
 
-        model.setListeners(new ScoreIterationListener(500));    //Print score every 100 parameter updates
+        //model.setListeners(new ScoreIterationListener(500));    //Print score every 100 parameter updates
 
         model.fit( trainIter );
 
