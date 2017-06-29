@@ -56,6 +56,8 @@ public class MLPTicTacToe {
 
             if(i % 100 == 0) {
                 System.out.println("Training count i = " + i);
+            }
+            if(i % 500 == 0) {
                 System.out.println("Date = " + new Date());
                 evaluate(new Policy(model, 0.0, true), new SupervisedPolicy());
                 evaluateModel(model);
