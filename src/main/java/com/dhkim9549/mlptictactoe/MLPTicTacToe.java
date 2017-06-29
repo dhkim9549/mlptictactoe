@@ -33,11 +33,16 @@ public class MLPTicTacToe {
 
     public static void main(String[] args) throws Exception {
 
-        System.out.println("*** ccc a ***");
+        double learnigRate = Double.parseDouble(args[0]);
+
+        System.out.println("************************************************");
+        System.out.println("Number of hidden layers = 9");
+        System.out.println("learnigRate = " + learnigRate);
+        System.out.println("************************************************");
 
         int batchSize = 32;
 
-        MultiLayerNetwork model = getInitModel();
+        MultiLayerNetwork model = getInitModel(learnigRate);
         //MultiLayerNetwork model = readModelFromFile("/down/ttt_model_300_2.zip");
         //MultiLayerNetwork opponentModel = readModelFromFile("/down/ttt_model_120_2.zip");
 
@@ -85,10 +90,10 @@ public class MLPTicTacToe {
         }
     }
 
-    public static MultiLayerNetwork getInitModel() throws Exception {
+    public static MultiLayerNetwork getInitModel(double learningRate) throws Exception {
 
         int seed = 123;
-        double learningRate = 0.0025;
+        //double learningRate = 0.0025;
 
         int numInputs = 9 * 3;
         int numOutputs = 2;
