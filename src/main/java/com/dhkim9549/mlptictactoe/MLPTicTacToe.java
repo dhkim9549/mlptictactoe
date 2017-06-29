@@ -37,11 +37,12 @@ public class MLPTicTacToe {
         double learnigRate = 0.0025;
 
         System.out.println("************************************************");
+        System.out.println("h2_uSGD_mb16_ss16");
         System.out.println("Number of hidden layers = 2");
         System.out.println("learnigRate = " + learnigRate);
         System.out.println("Updater = " + "SGD");
         System.out.println("mini-batch size = " + "16");
-        System.out.println("Number of sample size per iteration = " + "160");
+        System.out.println("Number of sample size per iteration = " + "16");
         System.out.println("************************************************");
 
         int batchSize = 16;
@@ -57,10 +58,10 @@ public class MLPTicTacToe {
 
         for(int i = 1; true; i++) {
 
-            if(i % 100 == 0) {
+            if(i % 1000 == 0) {
                 System.out.println("Training count i = " + i);
             }
-            if(i % 500 == 0) {
+            if(i % 5000 == 0) {
                 System.out.println("Date = " + new Date());
                 evaluate(new Policy(model, 0.0, true), new SupervisedPolicy());
                 evaluateModel(model);
@@ -90,8 +91,8 @@ public class MLPTicTacToe {
                 opponentPool.add(new Policy(model, 0.1));
             }
 
-            if(i % 1000 == 0) {
-                writeModelToFile(model, "/down/ttt_model_" + learnigRate + "_" + i + ".zip");
+            if(i % 10000 == 0) {
+                writeModelToFile(model, "/down/ttt_model_" + "h2_uSGD_mb16_ss16" + "_" + i + ".zip");
             }
         }
     }
@@ -219,7 +220,7 @@ public class MLPTicTacToe {
         //System.out.println("Getting training data...");
         //System.out.println("opponentPool.size() = " + opponentPool.size());
 
-        int nSamples = 16 * 10;
+        int nSamples = 16;
 
         Random rnd = new Random();
 
