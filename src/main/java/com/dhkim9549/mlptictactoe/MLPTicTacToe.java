@@ -57,10 +57,10 @@ public class MLPTicTacToe {
 
         for(int i = 1; true; i++) {
 
-            if(i % 1000 == 0) {
+            if(i % 100 == 0) {
                 System.out.println("Training count i = " + i);
             }
-            if(i % 5000 == 0) {
+            if(i % 500 == 0) {
                 System.out.println("Date = " + new Date());
                 evaluate(new Policy(model, 0.0, true), new SupervisedPolicy());
                 evaluateModel(model);
@@ -90,7 +90,7 @@ public class MLPTicTacToe {
                 opponentPool.add(new Policy(model, 0.1));
             }
 
-            if(i % 10000 == 0) {
+            if(i % 1000 == 0) {
                 writeModelToFile(model, "/down/ttt_model_" + learnigRate + "_" + i + ".zip");
             }
         }
