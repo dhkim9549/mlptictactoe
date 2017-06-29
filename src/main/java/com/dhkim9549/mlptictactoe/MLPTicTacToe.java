@@ -51,13 +51,13 @@ public class MLPTicTacToe {
         NeuralNetConfiguration config = model.conf();
         System.out.println("config = " + config);
 
-        for(int i = 1; i < 1000000; i++) {
+        for(int i = 1; i < 100000000; i++) {
 
 
-            if(i % 100 == 0) {
+            if(i % 1000 == 0) {
                 System.out.println("Training count i = " + i);
             }
-            if(i % 500 == 0) {
+            if(i % 5000 == 0) {
                 System.out.println("Date = " + new Date());
                 evaluate(new Policy(model, 0.0, true), new SupervisedPolicy());
                 evaluateModel(model);
@@ -65,11 +65,11 @@ public class MLPTicTacToe {
 
             double epsilon = Math.max(0.1, 1.0 - (double)i / 100.0);
 
-            if(i <= 7777300) {
+            if(i <= 777777300) {
                 if(opponentPool.isEmpty()) {
                     opponentPool.add(new SupervisedPolicy());
                 }
-            } else if(i >= 7777301) {
+            } else if(i >= 777777301) {
                 if(opponentPool.isEmpty()) {
                     opponentPool = loadOpponentPoolFromFiles();
                 }
@@ -83,7 +83,7 @@ public class MLPTicTacToe {
             DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
             model = train(model, trainIter);
 
-            if(i >= 7777301) {
+            if(i >= 777777301) {
                 opponentPool.add(new Policy(model, 0.1));
             }
 
@@ -217,7 +217,7 @@ public class MLPTicTacToe {
         //System.out.println("Getting training data...");
         //System.out.println("opponentPool.size() = " + opponentPool.size());
 
-        int nSamples = 16 * 10;
+        int nSamples = 16 * 1;
 
         Random rnd = new Random();
 
