@@ -53,10 +53,10 @@ public class MLPTicTacToe {
 
         for(int i = 1; i < 1000000; i++) {
 
-            System.out.println("Training count i = " + i);
-            System.out.println("Date = " + new Date());
 
             if(i % 100 == 0) {
+                System.out.println("Training count i = " + i);
+                System.out.println("Date = " + new Date());
                 evaluate(new Policy(model, 0.0, true), new SupervisedPolicy());
                 evaluateModel(model);
             }
@@ -80,7 +80,6 @@ public class MLPTicTacToe {
 
             DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
             model = train(model, trainIter);
-            System.out.println("model = " + model);
 
             if(i >= 7777301) {
                 opponentPool.add(new Policy(model, 0.1));
@@ -213,8 +212,8 @@ public class MLPTicTacToe {
 
     private static List<DataSet> getTrainingData(Policy playerPolicy, ArrayList<Policy> opponentPool) {
 
-        System.out.println("Getting training data...");
-        System.out.println("opponentPool.size() = " + opponentPool.size());
+        //System.out.println("Getting training data...");
+        //System.out.println("opponentPool.size() = " + opponentPool.size());
 
         int nSamples = 16 * 10;
 
@@ -245,8 +244,8 @@ public class MLPTicTacToe {
 
         Collections.shuffle(listDs);
 
-        System.out.println("listDs.size() = " + listDs.size());
-        System.out.println("Getting training complete.");
+        //System.out.println("listDs.size() = " + listDs.size());
+        //System.out.println("Getting training complete.");
 
         return listDs;
     }
