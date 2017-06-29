@@ -40,7 +40,7 @@ public class MLPTicTacToe {
         System.out.println("learnigRate = " + learnigRate);
         System.out.println("************************************************");
 
-        int batchSize = 32;
+        int batchSize = 16;
 
         MultiLayerNetwork model = getInitModel(learnigRate);
         //MultiLayerNetwork model = readModelFromFile("/down/ttt_model_300_2.zip");
@@ -51,21 +51,23 @@ public class MLPTicTacToe {
         NeuralNetConfiguration config = model.conf();
         System.out.println("config = " + config);
 
-        for(int i = 1; i < 10000; i++) {
+        for(int i = 1; i < 1000000; i++) {
 
             System.out.println("Training count i = " + i);
             System.out.println("Date = " + new Date());
 
-            evaluate(new Policy(model, 0.0, true), new SupervisedPolicy());
-            evaluateModel(model);
+            if(i % 100 == 0) {
+                evaluate(new Policy(model, 0.0, true), new SupervisedPolicy());
+                evaluateModel(model);
+            }
 
             double epsilon = Math.max(0.1, 1.0 - (double)i / 100.0);
 
-            if(i <= 777300) {
+            if(i <= 7777300) {
                 if(opponentPool.isEmpty()) {
                     opponentPool.add(new SupervisedPolicy());
                 }
-            } else if(i >= 777301) {
+            } else if(i >= 7777301) {
                 if(opponentPool.isEmpty()) {
                     opponentPool = loadOpponentPoolFromFiles();
                 }
@@ -80,12 +82,12 @@ public class MLPTicTacToe {
             model = train(model, trainIter);
             System.out.println("model = " + model);
 
-            if(i >= 777301) {
+            if(i >= 7777301) {
                 opponentPool.add(new Policy(model, 0.1));
             }
 
-            if(i % 10 == 0) {
-                writeModelToFile(model, "/down/ttt_model_LR_0_0025_" + i + ".zip");
+            if(i % 1000 == 0) {
+                writeModelToFile(model, "/down/ttt_model_" + args[0] + "_" + i + ".zip");
             }
         }
     }
@@ -119,35 +121,7 @@ public class MLPTicTacToe {
                         .weightInit(WeightInit.XAVIER)
                         .activation(Activation.RELU)
                         .build())
-                .layer(3, new DenseLayer.Builder().nIn(numHiddenNodes).nOut(numHiddenNodes)
-                        .weightInit(WeightInit.XAVIER)
-                        .activation(Activation.RELU)
-                        .build())
-                .layer(4, new DenseLayer.Builder().nIn(numHiddenNodes).nOut(numHiddenNodes)
-                        .weightInit(WeightInit.XAVIER)
-                        .activation(Activation.RELU)
-                        .build())
-                .layer(5, new DenseLayer.Builder().nIn(numHiddenNodes).nOut(numHiddenNodes)
-                        .weightInit(WeightInit.XAVIER)
-                        .activation(Activation.RELU)
-                        .build())
-                .layer(6, new DenseLayer.Builder().nIn(numHiddenNodes).nOut(numHiddenNodes)
-                        .weightInit(WeightInit.XAVIER)
-                        .activation(Activation.RELU)
-                        .build())
-                .layer(7, new DenseLayer.Builder().nIn(numHiddenNodes).nOut(numHiddenNodes)
-                        .weightInit(WeightInit.XAVIER)
-                        .activation(Activation.RELU)
-                        .build())
-                .layer(8, new DenseLayer.Builder().nIn(numHiddenNodes).nOut(numHiddenNodes)
-                        .weightInit(WeightInit.XAVIER)
-                        .activation(Activation.RELU)
-                        .build())
-                .layer(9, new DenseLayer.Builder().nIn(numHiddenNodes).nOut(numHiddenNodes)
-                        .weightInit(WeightInit.XAVIER)
-                        .activation(Activation.RELU)
-                        .build())
-                .layer(10, new OutputLayer.Builder(LossFunction.NEGATIVELOGLIKELIHOOD)
+                .layer(3, new OutputLayer.Builder(LossFunction.NEGATIVELOGLIKELIHOOD)
                         .weightInit(WeightInit.XAVIER)
                         .activation(Activation.SOFTMAX)
                         .nIn(numHiddenNodes).nOut(numOutputs).build())
@@ -242,7 +216,7 @@ public class MLPTicTacToe {
         System.out.println("Getting training data...");
         System.out.println("opponentPool.size() = " + opponentPool.size());
 
-        int nSamples = 100000;
+        int nSamples = 16 * 10;
 
         Random rnd = new Random();
 
