@@ -223,9 +223,11 @@ public class MLPTicTacToe {
 
         for (int i = 0; i < nSamples; i++) {
 
+/*
             if(i % 10000 == 0) {
                 System.out.println("Getting training data... i = " + i);
             }
+*/
 
             // Pick a opponent randomly from the opponent pool.
             Policy opponentPolicy = opponentPool.get(rnd.nextInt(opponentPool.size()));
