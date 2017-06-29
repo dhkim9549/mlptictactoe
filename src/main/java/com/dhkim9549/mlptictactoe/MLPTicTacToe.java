@@ -33,11 +33,14 @@ public class MLPTicTacToe {
 
     public static void main(String[] args) throws Exception {
 
-        double learnigRate = Double.parseDouble(args[0]);
+        //double learnigRate = Double.parseDouble(args[0]);
+        double learnigRate = 0.0025;
 
         System.out.println("************************************************");
-        System.out.println("Number of hidden layers = 9");
+        System.out.println("Number of hidden layers = 2");
         System.out.println("learnigRate = " + learnigRate);
+        System.out.println("Updater = " + "SGD");
+        System.out.println("mini-batch size = " + "16");
         System.out.println("************************************************");
 
         int batchSize = 16;
@@ -51,8 +54,7 @@ public class MLPTicTacToe {
         NeuralNetConfiguration config = model.conf();
         System.out.println("config = " + config);
 
-        for(int i = 1; i < 100000000; i++) {
-
+        for(int i = 1; true; i++) {
 
             if(i % 1000 == 0) {
                 System.out.println("Training count i = " + i);
@@ -65,11 +67,11 @@ public class MLPTicTacToe {
 
             double epsilon = Math.max(0.1, 1.0 - (double)i / 100.0);
 
-            if(i <= 777777300) {
+            if(true) {
                 if(opponentPool.isEmpty()) {
                     opponentPool.add(new SupervisedPolicy());
                 }
-            } else if(i >= 777777301) {
+            } else if(false) {
                 if(opponentPool.isEmpty()) {
                     opponentPool = loadOpponentPoolFromFiles();
                 }
@@ -83,12 +85,12 @@ public class MLPTicTacToe {
             DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
             model = train(model, trainIter);
 
-            if(i >= 777777301) {
+            if(false) {
                 opponentPool.add(new Policy(model, 0.1));
             }
 
             if(i % 10000 == 0) {
-                writeModelToFile(model, "/down/ttt_model_" + args[0] + "_" + i + ".zip");
+                writeModelToFile(model, "/down/ttt_model_" + learnigRate + "_" + i + ".zip");
             }
         }
     }
@@ -96,7 +98,6 @@ public class MLPTicTacToe {
     public static MultiLayerNetwork getInitModel(double learningRate) throws Exception {
 
         int seed = 123;
-        //double learningRate = 0.0025;
 
         int numInputs = 9 * 3;
         int numOutputs = 2;
@@ -108,7 +109,7 @@ public class MLPTicTacToe {
                 .iterations(1)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .learningRate(learningRate)
-                .updater(Updater.RMSPROP).momentum(0.95)
+                .updater(Updater.SGD)
                 .list()
                 .layer(0, new DenseLayer.Builder().nIn(numInputs).nOut(numHiddenNodes)
                         .weightInit(WeightInit.XAVIER)
@@ -136,7 +137,7 @@ public class MLPTicTacToe {
 
     public static MultiLayerNetwork train(MultiLayerNetwork model, DataSetIterator trainIter) throws Exception {
 
-        //model.setListeners(new ScoreIterationListener(500));    //Print score every 100 parameter updates
+        //model.setListeners(new ScoreIterationListener(500));
 
         model.fit( trainIter );
 
@@ -217,7 +218,7 @@ public class MLPTicTacToe {
         //System.out.println("Getting training data...");
         //System.out.println("opponentPool.size() = " + opponentPool.size());
 
-        int nSamples = 16 * 1;
+        int nSamples = 16;
 
         Random rnd = new Random();
 
@@ -385,8 +386,8 @@ public class MLPTicTacToe {
         }
 
         System.out.println("*** Evaluation Result ***");
-        System.out.print("Winning rate = " + (double)numOfWins / (double)numOfPlays + "   ");
-        System.out.print("Losing rate = " + (double)numOfLosses / (double)numOfPlays);
+        System.out.print("Winning rate = " + (double)numOfWins / (double)numOfPlays + ", ");
+        System.out.print("Losing rate = " + (double)numOfLosses / (double)numOfPlays + "\n");
         System.out.println("*************************");
         System.out.println("\n");
     }
