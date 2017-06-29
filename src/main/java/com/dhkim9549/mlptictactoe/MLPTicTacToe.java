@@ -385,9 +385,9 @@ public class MLPTicTacToe {
         }
 
         System.out.println("*** Evaluation Result ***");
-        System.out.println("Winning rate = " + (double)numOfWins / (double)numOfPlays);
-        System.out.println("Losing rate = " + (double)numOfLosses / (double)numOfPlays);
+        System.out.print("Winning rate = " + (double)numOfWins / (double)numOfPlays + "   ");
+        System.out.print("Losing rate = " + (double)numOfLosses / (double)numOfPlays);
+        System.out.println("*************************");
         System.out.println("\n");
-
     }
 }
