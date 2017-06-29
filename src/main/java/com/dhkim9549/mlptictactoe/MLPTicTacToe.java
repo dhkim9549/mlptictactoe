@@ -41,6 +41,7 @@ public class MLPTicTacToe {
         System.out.println("learnigRate = " + learnigRate);
         System.out.println("Updater = " + "SGD");
         System.out.println("mini-batch size = " + "16");
+        System.out.println("Number of sample size per iteration = " + "160");
         System.out.println("************************************************");
 
         int batchSize = 16;
@@ -218,7 +219,7 @@ public class MLPTicTacToe {
         //System.out.println("Getting training data...");
         //System.out.println("opponentPool.size() = " + opponentPool.size());
 
-        int nSamples = 16;
+        int nSamples = 16 * 10;
 
         Random rnd = new Random();
 
