@@ -31,24 +31,35 @@ import java.util.*;
  */
 public class MLPTicTacToe {
 
+    static String hpId = "h2_uSGD_mb16_ss16_ev100000";
+
+    //double learnigRate = Double.parseDouble(args[0]);
+    static double learnigRate = 0.0025;
+
+    // Number of sample size per iteration
+    static long nSamples = 16;
+
+    // Mini-batch size
+    static long batchSize = 16;
+
+    // Evaluation sample size
+    static long nEvalSamples = 100000;
+
     public static void main(String[] args) throws Exception {
 
-        //double learnigRate = Double.parseDouble(args[0]);
-        double learnigRate = 0.0025;
-
         System.out.println("************************************************");
-        System.out.println("h2_uSGD_mb16_ss16");
+        System.out.println("hpId = " + hpId);
         System.out.println("Number of hidden layers = 2");
         System.out.println("learnigRate = " + learnigRate);
         System.out.println("Updater = " + "SGD");
-        System.out.println("mini-batch size = " + "16");
-        System.out.println("Number of sample size per iteration = " + "16");
+        System.out.println("mini-batch size (batchSize) = " + batchSize);
+        System.out.println("Number of sample size per iteration (nSamples) = " + nSamples);
         System.out.println("************************************************");
 
         int batchSize = 16;
 
-        MultiLayerNetwork model = getInitModel(learnigRate);
-        //MultiLayerNetwork model = readModelFromFile("/down/ttt_model_300_2.zip");
+        //MultiLayerNetwork model = getInitModel(learnigRate);
+        MultiLayerNetwork model = readModelFromFile("/down/ttt_model_h2_uSGD_mb16_ss16_5210000.zip");
         //MultiLayerNetwork opponentModel = readModelFromFile("/down/ttt_model_120_2.zip");
 
         ArrayList<Policy> opponentPool = new ArrayList<>();
@@ -56,7 +67,7 @@ public class MLPTicTacToe {
         NeuralNetConfiguration config = model.conf();
         System.out.println("config = " + config);
 
-        for(int i = 1; true; i++) {
+        for(int i = 5210000; true; i++) {
 
             if(i % 1000 == 0) {
                 System.out.println("Training count i = " + i);
@@ -92,7 +103,7 @@ public class MLPTicTacToe {
             }
 
             if(i % 10000 == 0) {
-                writeModelToFile(model, "/down/ttt_model_" + "h2_uSGD_mb16_ss16" + "_" + i + ".zip");
+                writeModelToFile(model, "/down/ttt_model_" + hpId + "_" + i + ".zip");
             }
         }
     }
@@ -219,8 +230,6 @@ public class MLPTicTacToe {
 
         //System.out.println("Getting training data...");
         //System.out.println("opponentPool.size() = " + opponentPool.size());
-
-        int nSamples = 16;
 
         Random rnd = new Random();
 
@@ -362,13 +371,11 @@ public class MLPTicTacToe {
 
         System.out.println("Evaluating...");
 
-        int nSamples = 10000;
-
         int numOfWins = 0;
         int numOfLosses = 0;
         int numOfPlays = 0;
 
-        for (int i = 0; i < nSamples; i++) {
+        for (int i = 0; i < nEvalSamples; i++) {
 
             List<DataSet> ds = null;
 
