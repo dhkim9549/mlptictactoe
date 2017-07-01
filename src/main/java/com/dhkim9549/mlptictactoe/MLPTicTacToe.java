@@ -83,9 +83,6 @@ public class MLPTicTacToe {
 
             if(true) {
                 if(opponentPool.isEmpty()) {
-                    for(int j = 0; j < 100; j++) {
-                        System.out.println("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-                    }
                     //opponentPool.add(new SupervisedPolicy());
                     opponentPool.add(new HumanPolicy());
                 }
@@ -98,9 +95,8 @@ public class MLPTicTacToe {
             // If the model never loses during the evaluation, the training stops.
             if(lastLosingRate != 0.0) {
                 // Load the training data.
+                epsilon = 0.0; // play against human
                 List<DataSet> listDs = getTrainingData(new Policy(model, epsilon, true), opponentPool);
-                //List<DataSet> listDs = getTrainingData(new Policy(model, 0.0, true), new HumanPolicy());
-                //List<DataSet> listDs = getTrainingData(new HumanPolicy(), new SupervisedPolicy());
 
                 DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
 
