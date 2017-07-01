@@ -21,13 +21,11 @@ public class HumanPolicy extends Policy {
 
         int a = -1;
 
-        System.out.println("gs ***" + gs);
+        System.out.println("gs = " + gs);
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         try {
-            System.out.println("gs = " + this);
             System.out.print("Enter Integer:");
             a = Integer.parseInt(br.readLine());
-            System.out.println("gs = " + this);
         } catch (Exception e){
             e.printStackTrace();
         }

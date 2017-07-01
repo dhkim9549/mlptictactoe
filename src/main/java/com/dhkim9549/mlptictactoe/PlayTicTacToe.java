@@ -17,10 +17,17 @@ public class PlayTicTacToe {
 
         MultiLayerNetwork model = MLPTicTacToe.readModelFromFile("/down/ttt_model_h2_uSGD_mb16_ss16_5210000.zip");
 
+        int i = 0;
+
         while (true) {
 
             Policy aiPolicy = new Policy(model, 0.0);
-            playGame(new HumanPolicy(), aiPolicy);
+
+            if(i % 2 == 0) {
+                playGame(new HumanPolicy(), aiPolicy);
+            } else {
+                playGame(aiPolicy, new HumanPolicy());
+            }
         }
     }
 
