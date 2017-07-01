@@ -31,7 +31,7 @@ import java.util.*;
  */
 public class MLPTicTacToe {
 
-    static String hpId = "h2_uSGD_mb16_ss16_ev100000";
+    static String hpId = "h2_uSGD_ge_mb16_ss16_ev100000";
 
     //double learnigRate = Double.parseDouble(args[0]);
     static double learnigRate = 0.0025;
@@ -43,7 +43,7 @@ public class MLPTicTacToe {
     static long batchSize = 16;
 
     // Evaluation sample size
-    static long nEvalSamples = 100000;
+    static long nEvalSamples = 10000;
 
     public static void main(String[] args) throws Exception {
 
@@ -58,8 +58,8 @@ public class MLPTicTacToe {
 
         int batchSize = 16;
 
-        //MultiLayerNetwork model = getInitModel(learnigRate);
-        MultiLayerNetwork model = readModelFromFile("/down/ttt_model_h2_uSGD_mb16_ss16_5210000.zip");
+        MultiLayerNetwork model = getInitModel(learnigRate);
+        //MultiLayerNetwork model = readModelFromFile("/down/ttt_model_h2_uSGD_mb16_ss16_5210000.zip");
         //MultiLayerNetwork opponentModel = readModelFromFile("/down/ttt_model_120_2.zip");
 
         ArrayList<Policy> opponentPool = new ArrayList<>();
@@ -67,7 +67,11 @@ public class MLPTicTacToe {
         NeuralNetConfiguration config = model.conf();
         System.out.println("config = " + config);
 
-        for(int i = 5210001; true; i++) {
+        // training iteration
+        long i = 1;
+        long lastIterationModelSave = 0;
+
+        while(true) {
 
             if(i % 1000 == 0) {
                 System.out.println("Training count i = " + i);
@@ -79,17 +83,11 @@ public class MLPTicTacToe {
                 evaluateModel(model);
             }
 
-            double epsilon = Math.max(0.1, 1.0 - (double)i / 100.0);
+            // greedy epsilon
+            double epsilon = Math.max(0.1, 1.0 - (double)i / 100000.0);
 
-            if(true) {
-                if(opponentPool.isEmpty()) {
-                    //opponentPool.add(new SupervisedPolicy());
-                    opponentPool.add(new HumanPolicy());
-                }
-            } else if(false) {
-                if(opponentPool.isEmpty()) {
-                    opponentPool = loadOpponentPoolFromFiles();
-                }
+            if(opponentPool.isEmpty()) {
+                opponentPool.add(new SupervisedPolicy());
             }
 
             // If the model never loses during the evaluation, the training stops.
@@ -97,18 +95,18 @@ public class MLPTicTacToe {
                 // Load the training data.
                 epsilon = 0.0; // play against human
                 List<DataSet> listDs = getTrainingData(new Policy(model, epsilon, true), opponentPool);
-
                 DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
 
+                // Train the model
                 model = train(model, trainIter);
+                i++;
             }
 
-            if(false) {
-                opponentPool.add(new Policy(model, 0.1));
-            }
-
-            if(i % 10000 == 0) {
-                writeModelToFile(model, "/down/ttt_model_" + hpId + "_" + i + ".zip");
+            if(lastIterationModelSave != i) {
+                if (i % 10000 == 0 || lastLosingRate == 0.0) {
+                    writeModelToFile(model, "/down/ttt_model_" + hpId + "_" + i + ".zip");
+                    lastIterationModelSave = i;
+                }
             }
         }
     }
@@ -166,7 +164,7 @@ public class MLPTicTacToe {
 
         List<DataSet> dsList = new ArrayList<>();
         List<INDArray> featureArray = new ArrayList<>();
-        List moveList = new ArrayList();
+        List<Integer>moveList = new ArrayList<>();
 
         GameState gs = new GameState();
 
@@ -195,9 +193,11 @@ public class MLPTicTacToe {
             System.out.println("moveList = " + moveList);
         }
 */
+/*
 
         System.out.println("gs = " + gs);
         System.out.println("gggggggggggggggggggggggg\n\n");
+*/
 
         int winner = gs.getWinner();
         int player = 1;
@@ -238,12 +238,6 @@ public class MLPTicTacToe {
         List<DataSet> listDs = new ArrayList<>();
 
         for (int i = 0; i < nSamples; i++) {
-
-/*
-            if(i % 10000 == 0) {
-                System.out.println("Getting training data... i = " + i);
-            }
-*/
 
             // Pick a opponent randomly from the opponent pool.
             Policy opponentPolicy = opponentPool.get(rnd.nextInt(opponentPool.size()));
