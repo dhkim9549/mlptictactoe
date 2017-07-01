@@ -73,10 +73,9 @@ public class MLPTicTacToe {
                 System.out.println("Training count i = " + i);
             }
 
-            double losingRate = -1.0;
             if(i % 5000 == 0) {
                 System.out.println("Date = " + new Date());
-                losingRate = evaluate(new Policy(model, 0.0, true), new SupervisedPolicy());
+                evaluate(new Policy(model, 0.0, true), new SupervisedPolicy());
                 evaluateModel(model);
             }
 
@@ -93,7 +92,7 @@ public class MLPTicTacToe {
             }
 
             // If the model never loses during the evaluation, the training stops.
-            if(losingRate != 0.0) {
+            if(lastLosingRate != 0.0) {
                 // Load the training data.
                 List<DataSet> listDs = getTrainingData(new Policy(model, epsilon, true), opponentPool);
                 //List<DataSet> listDs = getTrainingData(new Policy(model, 0.0, true), new HumanPolicy());
@@ -373,7 +372,9 @@ public class MLPTicTacToe {
         return pool;
     }
 
-    private static double evaluate(Policy playerPolicy, Policy opponentPolicy) {
+    static double lastLosingRate = - 1.0;
+
+    private static void evaluate(Policy playerPolicy, Policy opponentPolicy) {
 
         System.out.println("Evaluating...");
 
@@ -400,16 +401,14 @@ public class MLPTicTacToe {
             numOfPlays++;
         }
 
-        double losingRate = (double)numOfLosses / (double)numOfPlays;
+        lastLosingRate = (double)numOfLosses / (double)numOfPlays;
 
         System.out.println("\n");
         System.out.println("*** Evaluation Result ***");
         System.out.print(hpId + ": ");
         System.out.print("Winning rate = " + (double)numOfWins / (double)numOfPlays + ", ");
-        System.out.print("Losing rate = " + losingRate  + "\n");
+        System.out.print("Losing rate = " + lastLosingRate  + "\n");
         System.out.println("*************************");
         System.out.println("\n");
-
-        return losingRate;
     }
 }
