@@ -68,23 +68,20 @@ public class MLPTicTacToe {
         System.out.println("config = " + config);
 
         // training iteration
-        long i = 1;
+        long i = 0;
+
         long lastIterationModelSave = 0;
+
+        // greedy epsilon
+        double epsilon = 0.0;
 
         while(true) {
 
-            if(i % 1000 == 0) {
-                System.out.println("Training count i = " + i);
-            }
-
-            if(i % 5000 == 0) {
+            if(i % 5000 == 0 || lastLosingRate == 0.0) {
                 System.out.println("Date = " + new Date());
                 evaluate(new Policy(model, 0.0, true), new SupervisedPolicy());
                 evaluateModel(model);
             }
-
-            // greedy epsilon
-            double epsilon = Math.max(0.1, 1.0 - (double)i / 100000.0);
 
             if(opponentPool.isEmpty()) {
                 opponentPool.add(new SupervisedPolicy());
@@ -92,14 +89,21 @@ public class MLPTicTacToe {
 
             // If the model never loses during the evaluation, the training stops.
             if(lastLosingRate != 0.0) {
+
+                i++;
+                epsilon = Math.max(0.1, 1.0 - (double)i / 100000.0);
+
+                if(i % 1000 == 0) {
+                    System.out.println("Training count i = " + i);
+                    System.out.println("epsilon = " + epsilon);
+                }
+
                 // Load the training data.
-                epsilon = 0.0; // play against human
                 List<DataSet> listDs = getTrainingData(new Policy(model, epsilon, true), opponentPool);
                 DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
 
                 // Train the model
                 model = train(model, trainIter);
-                i++;
             }
 
             if(lastIterationModelSave != i) {
