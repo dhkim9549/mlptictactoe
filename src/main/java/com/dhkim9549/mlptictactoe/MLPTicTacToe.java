@@ -83,7 +83,8 @@ public class MLPTicTacToe {
 
             if(true) {
                 if(opponentPool.isEmpty()) {
-                    opponentPool.add(new SupervisedPolicy());
+                    //opponentPool.add(new SupervisedPolicy());
+                    opponentPool.add(new HumanPolicy());
                 }
             } else if(false) {
                 if(opponentPool.isEmpty()) {
@@ -196,11 +197,8 @@ public class MLPTicTacToe {
         }
 */
 
-
-/*
         System.out.println("gs = " + gs);
         System.out.println("gggggggggggggggggggggggg\n\n");
-*/
 
         int winner = gs.getWinner();
         int player = 1;
