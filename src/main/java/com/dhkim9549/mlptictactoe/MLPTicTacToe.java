@@ -83,6 +83,7 @@ public class MLPTicTacToe {
 
             if(true) {
                 if(opponentPool.isEmpty()) {
+                    System.out.println("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
                     //opponentPool.add(new SupervisedPolicy());
                     opponentPool.add(new HumanPolicy());
                 }
