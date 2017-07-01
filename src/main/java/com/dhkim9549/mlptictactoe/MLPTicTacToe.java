@@ -92,15 +92,15 @@ public class MLPTicTacToe {
                 }
             }
 
-            // Load the training data.
-            List<DataSet> listDs = getTrainingData(new Policy(model, epsilon, true), opponentPool);
-            //List<DataSet> listDs = getTrainingData(new Policy(model, 0.0, true), new HumanPolicy());
-            //List<DataSet> listDs = getTrainingData(new HumanPolicy(), new SupervisedPolicy());
-
-            DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
-
             // If the model never loses during the evaluation, the training stops.
             if(losingRate != 0.0) {
+                // Load the training data.
+                List<DataSet> listDs = getTrainingData(new Policy(model, epsilon, true), opponentPool);
+                //List<DataSet> listDs = getTrainingData(new Policy(model, 0.0, true), new HumanPolicy());
+                //List<DataSet> listDs = getTrainingData(new HumanPolicy(), new SupervisedPolicy());
+
+                DataSetIterator trainIter = new ListDataSetIterator(listDs, batchSize);
+
                 model = train(model, trainIter);
             }
 
