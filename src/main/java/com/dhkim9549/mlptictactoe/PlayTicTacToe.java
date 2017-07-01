@@ -28,6 +28,7 @@ public class PlayTicTacToe {
             } else {
                 playGame(aiPolicy, new HumanPolicy());
             }
+            i++;
         }
     }
 
