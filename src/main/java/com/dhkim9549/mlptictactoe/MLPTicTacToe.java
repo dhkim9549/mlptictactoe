@@ -67,7 +67,7 @@ public class MLPTicTacToe {
         NeuralNetConfiguration config = model.conf();
         System.out.println("config = " + config);
 
-        for(int i = 5210000; true; i++) {
+        for(int i = 5210001; true; i++) {
 
             if(i % 1000 == 0) {
                 System.out.println("Training count i = " + i);
