@@ -29,7 +29,7 @@ public class ServerOperation extends UnicastRemoteObject implements RMIInterface
 
         try {
 
-            System.err.println("Starting...");
+            System.err.println("Starting.....");
             Naming.rebind("//localhost/MyServer", new ServerOperation());
             System.err.println("Server ready");
 
