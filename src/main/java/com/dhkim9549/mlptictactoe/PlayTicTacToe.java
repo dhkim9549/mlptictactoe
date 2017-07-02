@@ -1,12 +1,6 @@
 package com.dhkim9549.mlptictactoe;
 
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.dataset.DataSet;
-import org.nd4j.linalg.factory.Nd4j;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by user on 2017-07-01.
