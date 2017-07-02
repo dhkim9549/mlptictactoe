@@ -55,7 +55,7 @@ public class ServerOperation extends UnicastRemoteObject implements RMIInterface
         try {
 
             System.err.println("Starting.....");
-            System.setProperty("java.rmi.server.hostname","220.230.113.107");
+            System.setProperty("java.rmi.server.hostname","bada.ai");
             Naming.rebind("//localhost/MyServer", new ServerOperation());
             System.err.println("Server ready");
 
