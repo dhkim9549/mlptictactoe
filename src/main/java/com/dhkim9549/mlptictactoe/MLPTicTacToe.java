@@ -30,7 +30,7 @@ import java.util.*;
  */
 public class MLPTicTacToe {
 
-    static String hpId = "h2_uSGD_ge_mb16_ss16_ev100000";
+    static String hpId = "h2_uSGD_ge_mb16_ss16_ev100000_aRP";
 
     //double learnigRate = Double.parseDouble(args[0]);
     static double learnigRate = 0.0025;
@@ -78,12 +78,14 @@ public class MLPTicTacToe {
 
             if(i % 5000 == 0 || lastLosingRate == 0.0) {
                 System.out.println("Date = " + new Date());
+                evaluate(new Policy(model, 0.0, true), new RandomPolicy());
+                evaluateModel(model);
                 evaluate(new Policy(model, 0.0, true), new SupervisedPolicy());
                 evaluateModel(model);
             }
 
             if(opponentPool.isEmpty()) {
-                opponentPool.add(new SupervisedPolicy());
+                opponentPool.add(new RandomPolicy());
             }
 
             // If the model never loses during the evaluation, the training stops.
