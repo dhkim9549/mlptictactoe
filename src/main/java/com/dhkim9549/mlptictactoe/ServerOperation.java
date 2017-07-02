@@ -29,6 +29,7 @@ public class ServerOperation extends UnicastRemoteObject implements RMIInterface
 
         try {
 
+            System.err.println("Starting...");
             Naming.rebind("//bada.ai/MyServer", new ServerOperation());
             System.err.println("Server ready");
 
