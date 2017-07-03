@@ -2,12 +2,12 @@ package com.dhkim9549.mlptictactoe;
 
 import jdk.nashorn.internal.parser.JSONParser;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
-import org.json.simple.*;
 import org.nd4j.linalg.api.ndarray.INDArray;
-
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import org.json.simple.*;
+import org.json.simple.parser.*;
 
 /**
  * Created by user on 2017-07-02.
@@ -35,14 +35,22 @@ public class ServerOperation extends UnicastRemoteObject implements RMIInterface
         System.err.println("Client is trying to contact!");
         System.out.println("boardStr = " + boardStr);
 
-        JSONObject obj = new JSONObject();
-        obj.put("name", "mkyong.com");
-        obj.put("age", new Integer(100));
+        String jsonStr = boardStr;
+        jsonStr = "{\"board\":" + jsonStr + "}";
 
-        JSONArray list = new JSONArray();
-        list.add("msg 1");
-        list.add("msg 2");
-        list.add("msg 3");
+        org.json.simple.parser.JSONParser jsonParser = new org.json.simple.parser.JSONParser();
+        org.json.simple.JSONObject jsonObj = null;
+        try {
+            jsonObj = (org.json.simple.JSONObject) jsonParser.parse(jsonStr);
+        } catch(Exception e) {
+        }
+        org.json.simple.JSONArray memberArray = (org.json.simple.JSONArray) jsonObj.get("board");
+
+        System.out.println(jsonStr);
+        System.out.println(memberArray.size());
+        for(int i=0 ; i<memberArray.size() ; i++){
+            System.out.print(memberArray.get(i) + ",");
+        }
 
 
         GameState gs = new GameState();
