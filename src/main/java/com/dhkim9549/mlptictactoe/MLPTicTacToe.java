@@ -53,6 +53,7 @@ public class MLPTicTacToe {
         System.out.println("Updater = " + "SGD");
         System.out.println("mini-batch size (batchSize) = " + batchSize);
         System.out.println("Number of sample size per iteration (nSamples) = " + nSamples);
+        System.out.println("i >= 3206000");
         System.out.println("************************************************");
 
         int batchSize = 16;
