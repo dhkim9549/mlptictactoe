@@ -30,7 +30,8 @@ public class ServerOperation extends UnicastRemoteObject implements RMIInterface
     @Override
     public String helloTo(String name) throws RemoteException {
 
-        System.err.println(name + " is trying to contact!");
+        System.err.println("Client is trying to contact!");
+        System.out.println("name = " + name);
 
         GameState gs = new GameState();
         gs.playMove(2);
