@@ -57,9 +57,9 @@ public class MLPTicTacToe {
 
         int batchSize = 16;
 
-        MultiLayerNetwork model = getInitModel(learnigRate);
+        //MultiLayerNetwork model = getInitModel(learnigRate);
+        MultiLayerNetwork model = readModelFromFile("/down/ttt_model_h2_uSGD_ge_mb16_ss16_ev100000_aRP_3200000.zip");
         //MultiLayerNetwork model = readModelFromFile("/down/ttt_model_h2_uSGD_mb16_ss16_5210000.zip");
-        //MultiLayerNetwork opponentModel = readModelFromFile("/down/ttt_model_120_2.zip");
 
         ArrayList<Policy> opponentPool = new ArrayList<>();
 
@@ -67,7 +67,7 @@ public class MLPTicTacToe {
         System.out.println("config = " + config);
 
         // training iteration
-        long i = 0;
+        long i = 3206000;
 
         long lastIterationModelSave = 0;
 
