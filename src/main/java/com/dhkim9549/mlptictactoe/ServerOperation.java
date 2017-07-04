@@ -38,11 +38,12 @@ public class ServerOperation extends UnicastRemoteObject implements RMIInterface
         JSONObject jsonObj = null;
         try {
             jsonObj = (JSONObject) jsonParser.parse(boardJsonStr);
+            System.out.println("jsonObj = " + jsonObj);
         } catch(Exception e) {
         }
         JSONArray memberArray = (JSONArray) jsonObj.get("board");
 
-        System.out.println(memberArray.size());
+        System.out.println("memberArray.size() = " + memberArray.size());
         for(int i=0 ; i<memberArray.size() ; i++){
             System.out.print(memberArray.get(i) + ",");
         }
