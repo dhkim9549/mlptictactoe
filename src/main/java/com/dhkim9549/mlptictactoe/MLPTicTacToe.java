@@ -177,7 +177,7 @@ public class MLPTicTacToe {
         while(!gs.isOver()) {
 
             int a = 0;
-            if(gs.getNextPlayer() == 1) {
+            if(gs.getCurrentPlayer() == 1) {
                 a = policy1.chooseMove(gs, false);
             } else {
                 a = policy2.chooseMove(gs, false);
@@ -186,7 +186,7 @@ public class MLPTicTacToe {
 
             gs.playMove(a);
 
-            featureArray.add(gs.getFeature(- gs.getNextPlayer()));
+            featureArray.add(gs.getFeature(- gs.getCurrentPlayer()));
         }
 
 /*
@@ -300,7 +300,7 @@ public class MLPTicTacToe {
         {
             GameState gs = new GameState();
 
-            INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
+            INDArray output = model.output(gs.getFeature(gs.getCurrentPlayer()));
             System.out.println("output = " + output);
 
             Policy policy = new Policy(model, 0.0);
@@ -316,7 +316,7 @@ public class MLPTicTacToe {
             gs.playMove(4);
             gs.playMove(5);
 
-            INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
+            INDArray output = model.output(gs.getFeature(gs.getCurrentPlayer()));
             System.out.println("output = " + output);
 
             Policy policy = new Policy(model, 0.0);
@@ -331,7 +331,7 @@ public class MLPTicTacToe {
             gs.playMove(4);
             gs.playMove(1);
 
-            INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
+            INDArray output = model.output(gs.getFeature(gs.getCurrentPlayer()));
             System.out.println("output = " + output);
 
             Policy policy = new Policy(model, 0.0);
@@ -346,7 +346,7 @@ public class MLPTicTacToe {
             gs.playMove(4);
             gs.playMove(3);
 
-            INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
+            INDArray output = model.output(gs.getFeature(gs.getCurrentPlayer()));
             System.out.println("output = " + output);
 
             Policy policy = new Policy(model, 0.0);

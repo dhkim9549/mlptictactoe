@@ -29,7 +29,7 @@ public class Policy {
     }
 
     /**
-     * Chooses the best move for the next player given a game state
+     * Chooses the best move for the current player given a game state
      * @param printOption
      * @return the best move
      */
@@ -58,8 +58,8 @@ public class Policy {
                 if (gs.board[i][j] != 0) {
                     continue;
                 }
-                gs.board[i][j] = gs.nextPlayer;
-                INDArray feature = gs.getFeature(gs.nextPlayer);
+                gs.board[i][j] = gs.currentPlayer;
+                INDArray feature = gs.getFeature(gs.currentPlayer);
                 INDArray outputArray = model.output(feature);
                 double v = outputArray.getDouble(0, 0);
                 valueArray.put(i, j, v);

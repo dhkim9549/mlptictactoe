@@ -40,20 +40,28 @@ public class ServerOperation extends UnicastRemoteObject implements RMIInterface
             jsonObj = (JSONObject) jsonParser.parse(boardJsonStr);
             System.out.println("jsonObj = " + jsonObj);
         } catch(Exception e) {
+            System.out.println(e);
         }
         JSONArray memberArray = (JSONArray) jsonObj.get("board");
 
         System.out.println("memberArray.size() = " + memberArray.size());
-        for(int i=0 ; i<memberArray.size() ; i++){
-            System.out.print(memberArray.get(i) + ",");
-        }
-
 
         GameState gs = new GameState();
-        gs.playMove(2);
-        gs.playMove(4);
-        gs.playMove(3);
+        int nextPlayer = -1;
 
+        for(int i = 0 ; i < memberArray.size() ; i++) {
+            System.out.println(i + " = " + memberArray.get(i));
+            int b = 0;
+            String m = (String)memberArray.get(i);
+            if(m.equals("O")) {
+                b = 1;
+            } else if(m.equals("X")) {
+                b = -1;
+            }
+            gs.board[i / 3][i % 3] = b;
+        }
+
+        System.out.println("gs = " + gs);
 
         INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
         System.out.println("output = " + output);
@@ -62,9 +70,7 @@ public class ServerOperation extends UnicastRemoteObject implements RMIInterface
         int a = policy.chooseMove(gs, true);
         System.out.println("a = " + a);
 
-
         return "a = " + a;
-
     }
 
     public static void main(String[] args) {
@@ -73,7 +79,7 @@ public class ServerOperation extends UnicastRemoteObject implements RMIInterface
 
             System.err.println("Starting.....");
             System.setProperty("java.rmi.server.hostname","bada.ai");
-            Naming.rebind("//localhost/MyServer", new ServerOperation());
+            Naming.rebind("MyServer", new ServerOperation());
             System.err.println("Server ready");
 
         } catch (Exception e) {

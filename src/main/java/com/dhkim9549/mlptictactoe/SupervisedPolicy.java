@@ -29,8 +29,8 @@ public class SupervisedPolicy extends Policy {
                 if (gs.board[i][j] != 0) {
                     continue;
                 }
-                gs.board[i][j] = gs.nextPlayer;
-                if (gs.isOver() && gs.getWinner() == gs.nextPlayer) {
+                gs.board[i][j] = gs.currentPlayer;
+                if (gs.isOver() && gs.getWinner() == gs.currentPlayer) {
                     a = i * 3 + j;
                 }
                 gs.board[i][j] = 0;

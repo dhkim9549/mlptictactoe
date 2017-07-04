@@ -34,7 +34,7 @@ public class PlayTicTacToe {
         while(!gs.isOver()) {
 
             int a = 0;
-            if(gs.getNextPlayer() == 1) {
+            if(gs.getCurrentPlayer() == 1) {
                 a = policy1.chooseMove(gs, false);
             } else {
                 a = policy2.chooseMove(gs, false);

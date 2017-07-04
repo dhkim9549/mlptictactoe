@@ -22,15 +22,15 @@ public class GameState {
     private int winner;
 
     /**
-     * Next player
+     * Current player
      * Either 1 or -1
      */
-    public int nextPlayer;
+    public int currentPlayer;
 
     public GameState() {
         board = new int[3][3];
         winner = 0;
-        nextPlayer = 1;
+        currentPlayer = 1;
     }
 
     public static void main(String[] args) {
@@ -59,7 +59,7 @@ public class GameState {
         String s = "";
         s += "\n" + bArray.toString();
         s += "\nisOver = " + isOver();
-        s += "\nnextPlayer = " + nextPlayer;
+        s += "\ncurrentPlayer = " + currentPlayer;
         s += "\nwinner = " + winner;
 
         return s;
@@ -98,16 +98,16 @@ public class GameState {
     }
 
     /**
-     * Place a stone on the board of the next player.
+     * Place a stone on the board of the current player.
      */
     public void placeStone(int x, int y) {
 
-        this.board[x][y] = nextPlayer;
-        nextPlayer = - nextPlayer;
+        this.board[x][y] = currentPlayer;
+        currentPlayer = - currentPlayer;
     }
 
     /**
-     * Play the next move
+     * Play the current move
      * @param a action
      */
     public void playMove(int a) {
@@ -226,11 +226,11 @@ public class GameState {
     }
 
     /**
-     * Returns the next player of the game
+     * Returns the current player of the game
      * @return
      */
-    public int getNextPlayer() {
+    public int getCurrentPlayer() {
 
-        return nextPlayer;
+        return currentPlayer;
     }
 }
