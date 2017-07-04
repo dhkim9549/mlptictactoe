@@ -1,6 +1,5 @@
 package com.dhkim9549.mlptictactoe;
 
-import jdk.nashorn.internal.parser.JSONParser;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import java.rmi.Naming;
@@ -30,23 +29,19 @@ public class ServerOperation extends UnicastRemoteObject implements RMIInterface
     }
 
     @Override
-    public String helloTo(String boardStr) throws RemoteException {
+    public String helloTo(String boardJsonStr) throws RemoteException {
 
         System.err.println("Client is trying to contact!");
-        System.out.println("boardStr = " + boardStr);
+        System.out.println("boardJsonStr = " + boardJsonStr);
 
-        String jsonStr = boardStr;
-        jsonStr = "{\"board\":" + jsonStr + "}";
-
-        org.json.simple.parser.JSONParser jsonParser = new org.json.simple.parser.JSONParser();
-        org.json.simple.JSONObject jsonObj = null;
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonObj = null;
         try {
-            jsonObj = (org.json.simple.JSONObject) jsonParser.parse(jsonStr);
+            jsonObj = (JSONObject) jsonParser.parse(boardJsonStr);
         } catch(Exception e) {
         }
-        org.json.simple.JSONArray memberArray = (org.json.simple.JSONArray) jsonObj.get("board");
+        JSONArray memberArray = (JSONArray) jsonObj.get("board");
 
-        System.out.println(jsonStr);
         System.out.println(memberArray.size());
         for(int i=0 ; i<memberArray.size() ; i++){
             System.out.print(memberArray.get(i) + ",");
