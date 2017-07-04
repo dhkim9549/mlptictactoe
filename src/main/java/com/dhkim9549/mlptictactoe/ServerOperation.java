@@ -3,8 +3,6 @@ package com.dhkim9549.mlptictactoe;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.json.simple.*;
 import org.json.simple.parser.*;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
@@ -45,7 +43,7 @@ public class ServerOperation extends UnicastRemoteObject implements RMIInterface
         } catch(Exception e) {
             System.out.println(e);
         }
-        JSONArray memberArray = (JSONArray) jsonObj.get("board");
+        JSONArray memberArray = (JSONArray)jsonObj.get("board");
         String currentPlayerStr = (String)jsonObj.get("currentPlayer");
         System.out.println("memberArray.size() = " + memberArray.size());
 
