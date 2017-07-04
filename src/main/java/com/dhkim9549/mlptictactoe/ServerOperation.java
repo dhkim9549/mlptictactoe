@@ -23,7 +23,8 @@ public class ServerOperation extends UnicastRemoteObject implements RMIInterface
 
         super();
         try {
-            model = MLPTicTacToe.readModelFromFile("/down/ttt_model_h2_uSGD_mb16_ss16_5210000.zip");
+            //model = MLPTicTacToe.readModelFromFile("/down/sin/ttt_model_h2_uSGD_mb16_ss16_5210000.zip");
+            model = MLPTicTacToe.readModelFromFile("/down/sin/ttt_model_h2_uSGD_ge_mb16_ss16_ev100000_aRP_5780000.zip");
         } catch (Exception e) {
             e.printStackTrace();
         }
