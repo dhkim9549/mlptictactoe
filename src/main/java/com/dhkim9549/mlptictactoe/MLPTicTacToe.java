@@ -30,7 +30,7 @@ import java.util.*;
  */
 public class MLPTicTacToe {
 
-    static String hpId = "h2_uSGD_ge_mb16_ss16_ev100000_aRP";
+    static String hpId = "h2_uSGD_ge_mb16_ss16_ev100000_aSP";
 
     //double learnigRate = Double.parseDouble(args[0]);
     static double learnigRate = 0.0025;
@@ -53,13 +53,13 @@ public class MLPTicTacToe {
         System.out.println("Updater = " + "SGD");
         System.out.println("mini-batch size (batchSize) = " + batchSize);
         System.out.println("Number of sample size per iteration (nSamples) = " + nSamples);
-        System.out.println("i >= 3206000");
+        System.out.println("i >= 0");
         System.out.println("************************************************");
 
         int batchSize = 16;
 
-        //MultiLayerNetwork model = getInitModel(learnigRate);
-        MultiLayerNetwork model = readModelFromFile("/down/ttt_model_h2_uSGD_ge_mb16_ss16_ev100000_aRP_3200000.zip");
+        MultiLayerNetwork model = getInitModel(learnigRate);
+        //MultiLayerNetwork model = readModelFromFile("/down/ttt_model_h2_uSGD_ge_mb16_ss16_ev100000_aRP_3200000.zip");
         //MultiLayerNetwork model = readModelFromFile("/down/ttt_model_h2_uSGD_mb16_ss16_5210000.zip");
 
         ArrayList<Policy> opponentPool = new ArrayList<>();
@@ -68,7 +68,7 @@ public class MLPTicTacToe {
         System.out.println("config = " + config);
 
         // training iteration
-        long i = 3206000;
+        long i = 0;
 
         long lastIterationModelSave = 0;
 
@@ -79,14 +79,13 @@ public class MLPTicTacToe {
 
             if(i % 5000 == 0 || lastLosingRate == 0.0) {
                 System.out.println("Date = " + new Date());
-                evaluate(new Policy(model, 0.0, true), new RandomPolicy());
-                evaluateModel(model);
                 evaluate(new Policy(model, 0.0, true), new SupervisedPolicy());
                 evaluateModel(model);
             }
 
             if(opponentPool.isEmpty()) {
-                opponentPool.add(new RandomPolicy());
+                //opponentPool.add(new RandomPolicy());
+                opponentPool.add(new SupervisedPolicy());
             }
 
             // If the model never loses during the evaluation, the training stops.
