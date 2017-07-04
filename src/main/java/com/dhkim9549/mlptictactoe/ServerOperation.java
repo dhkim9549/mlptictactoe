@@ -43,7 +43,7 @@ public class ServerOperation extends UnicastRemoteObject implements RMIInterface
             System.out.println(e);
         }
         JSONArray memberArray = (JSONArray) jsonObj.get("board");
-        String currentPlayerStr = (String)jsonObj.get("currentPlayerStr");
+        String currentPlayerStr = (String)jsonObj.get("currentPlayer");
         System.out.println("memberArray.size() = " + memberArray.size());
 
         GameState gs = new GameState();
