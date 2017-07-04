@@ -43,19 +43,26 @@ public class ServerOperation extends UnicastRemoteObject implements RMIInterface
             System.out.println(e);
         }
         JSONArray memberArray = (JSONArray) jsonObj.get("board");
-
+        String currentPlayerStr = (String)jsonObj.get("currentPlayerStr");
         System.out.println("memberArray.size() = " + memberArray.size());
 
         GameState gs = new GameState();
-        int nextPlayer = -1;
+
+        int currentPlayer = 0;
+        if(currentPlayerStr.equals("X")) {
+            currentPlayer = 1;
+        } else if(currentPlayerStr.equals("O")) {
+            currentPlayer = -1;
+        }
+        gs.currentPlayer = currentPlayer;
 
         for(int i = 0 ; i < memberArray.size() ; i++) {
             System.out.println(i + " = " + memberArray.get(i));
             int b = 0;
             String m = (String)memberArray.get(i);
-            if(m.equals("O")) {
+            if(m.equals("X")) {
                 b = 1;
-            } else if(m.equals("X")) {
+            } else if(m.equals("O")) {
                 b = -1;
             }
             gs.board[i / 3][i % 3] = b;
@@ -63,7 +70,7 @@ public class ServerOperation extends UnicastRemoteObject implements RMIInterface
 
         System.out.println("gs = " + gs);
 
-        INDArray output = model.output(gs.getFeature(gs.getNextPlayer()));
+        INDArray output = model.output(gs.getFeature(gs.getCurrentPlayer()));
         System.out.println("output = " + output);
 
         Policy policy = new Policy(model, 0.0);
