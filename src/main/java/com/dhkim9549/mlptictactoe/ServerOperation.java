@@ -1,12 +1,14 @@
 package com.dhkim9549.mlptictactoe;
 
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.json.simple.*;
+import org.json.simple.parser.*;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import org.json.simple.*;
-import org.json.simple.parser.*;
 
 /**
  * Created by user on 2017-07-02.
@@ -77,7 +79,12 @@ public class ServerOperation extends UnicastRemoteObject implements RMIInterface
         int a = policy.chooseMove(gs, true);
         System.out.println("a = " + a);
 
-        return "a = " + a;
+        JSONObject moveJsonObj = new JSONObject();
+        moveJsonObj.put("a", a);
+        System.out.println("moveJsonObj.toString() = " + moveJsonObj.toString());
+        System.out.println("moveJsonObj.toJSONString() = " + moveJsonObj.toJSONString());
+
+        return moveJsonObj.toString();
     }
 
     public static void main(String[] args) {
