@@ -33,9 +33,9 @@ public class ServerOperation extends UnicastRemoteObject implements RMIInterface
     @Override
     public String helloTo(String boardJsonStr) throws RemoteException {
 
-        System.err.println("Client is trying to contact! ver 1.0");
-        System.out.println("boardJsonStr = " + boardJsonStr);
+        System.out.println("\nClient is trying to contact! ver 2.0");
         System.out.println(new Date());
+        System.out.println("boardJsonStr = " + boardJsonStr);
 
         JSONParser jsonParser = new JSONParser();
         JSONObject jsonObj = null;
