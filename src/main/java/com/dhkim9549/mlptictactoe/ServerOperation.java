@@ -7,6 +7,7 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Date;
 
 /**
  * Created by user on 2017-07-02.
@@ -34,6 +35,7 @@ public class ServerOperation extends UnicastRemoteObject implements RMIInterface
 
         System.err.println("Client is trying to contact! ver 1.0");
         System.out.println("boardJsonStr = " + boardJsonStr);
+        System.out.println(new Date());
 
         JSONParser jsonParser = new JSONParser();
         JSONObject jsonObj = null;
@@ -58,7 +60,6 @@ public class ServerOperation extends UnicastRemoteObject implements RMIInterface
         gs.currentPlayer = currentPlayer;
 
         for(int i = 0 ; i < memberArray.size() ; i++) {
-            System.out.println(i + " = " + memberArray.get(i));
             int b = 0;
             String m = (String)memberArray.get(i);
             if(m.equals("X")) {
@@ -81,7 +82,6 @@ public class ServerOperation extends UnicastRemoteObject implements RMIInterface
         JSONObject moveJsonObj = new JSONObject();
         moveJsonObj.put("a", a);
         System.out.println("moveJsonObj.toString() = " + moveJsonObj.toString());
-        System.out.println("moveJsonObj.toJSONString() = " + moveJsonObj.toJSONString());
 
         return moveJsonObj.toString();
     }
