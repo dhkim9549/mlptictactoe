@@ -22,15 +22,11 @@ import java.util.*;
 
 /**
  *  Tic Tac Toe Reinforcement Learning
- *
- *  for i <= 300 do a supervised learning with decreasing epsilon
- *  for i >= 301 do a reinforcement learning against the opponent pool
- *
  * @author Dong-Hyun Kim
  */
 public class MLPTicTacToe {
 
-    static String hpId = "h2_uSGD_ge_mb16_ss16_ev100000_aSP";
+    static String hpId = "h1_uSGD_ge_mb16_ss16_ev100000_aSP";
 
     //double learnigRate = Double.parseDouble(args[0]);
     static double learnigRate = 0.0025;
@@ -48,7 +44,7 @@ public class MLPTicTacToe {
 
         System.out.println("************************************************");
         System.out.println("hpId = " + hpId);
-        System.out.println("Number of hidden layers = 2");
+        System.out.println("Number of hidden layers = 1");
         System.out.println("learnigRate = " + learnigRate);
         System.out.println("Updater = " + "SGD");
         System.out.println("mini-batch size (batchSize) = " + batchSize);
@@ -140,11 +136,7 @@ public class MLPTicTacToe {
                         .weightInit(WeightInit.XAVIER)
                         .activation(Activation.RELU)
                         .build())
-                .layer(2, new DenseLayer.Builder().nIn(numHiddenNodes).nOut(numHiddenNodes)
-                        .weightInit(WeightInit.XAVIER)
-                        .activation(Activation.RELU)
-                        .build())
-                .layer(3, new OutputLayer.Builder(LossFunction.NEGATIVELOGLIKELIHOOD)
+                .layer(2, new OutputLayer.Builder(LossFunction.NEGATIVELOGLIKELIHOOD)
                         .weightInit(WeightInit.XAVIER)
                         .activation(Activation.SOFTMAX)
                         .nIn(numHiddenNodes).nOut(numOutputs).build())
