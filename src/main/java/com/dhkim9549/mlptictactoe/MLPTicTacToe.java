@@ -44,7 +44,7 @@ public class MLPTicTacToe {
 
         System.out.println("************************************************");
         System.out.println("hpId = " + hpId);
-        System.out.println("Number of hidden layers = 1");
+        System.out.println("Number of hidden layers = 2");
         System.out.println("learnigRate = " + learnigRate);
         System.out.println("Updater = " + "SGD");
         System.out.println("mini-batch size (batchSize) = " + batchSize);
