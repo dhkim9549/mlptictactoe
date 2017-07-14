@@ -35,7 +35,7 @@ public class MLPTicTacToe {
     static long nSamples = 16;
 
     // Mini-batch size
-    static long batchSize = 16;
+    static int batchSize = 16;
 
     // Evaluation sample size
     static long nEvalSamples = 10000;
@@ -51,8 +51,6 @@ public class MLPTicTacToe {
         System.out.println("Number of sample size per iteration (nSamples) = " + nSamples);
         System.out.println("i >= 0");
         System.out.println("************************************************");
-
-        int batchSize = 16;
 
         MultiLayerNetwork model = getInitModel(learnigRate);
         //MultiLayerNetwork model = readModelFromFile("/down/ttt_model_h2_uSGD_ge_mb16_ss16_ev100000_aRP_3200000.zip");
