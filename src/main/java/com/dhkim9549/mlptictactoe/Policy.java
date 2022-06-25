@@ -3,13 +3,16 @@ package com.dhkim9549.mlptictactoe;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Random;
 
 /**
  * Behavior policy
  */
 public class Policy {
+
+    private static final Logger log = LoggerFactory.getLogger(Policy.class);
 
     private double epsilon = 0.0;
     private MultiLayerNetwork model = null;
@@ -72,10 +75,10 @@ public class Policy {
         }
 
         if(printOption) {
-            System.out.println("valueArray = " + valueArray);
+            log.info("valueArray = " + valueArray);
         }
 
-        //System.out.println("gs ***" + gs);
+        //log.info("gs ***" + gs);
 
         return a;
     }

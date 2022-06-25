@@ -16,7 +16,8 @@ import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.*;
 
@@ -25,6 +26,8 @@ import java.util.*;
  * @author Dong-Hyun Kim
  */
 public class MLPTicTacToe {
+
+    private static final Logger log = LoggerFactory.getLogger(MLPTicTacToe.class);
 
     static String hpId = "h2_uSGD_ge_mb16_ss16_ev100000_aSP";
 
@@ -42,15 +45,15 @@ public class MLPTicTacToe {
 
     public static void main(String[] args) throws Exception {
 
-        System.out.println("************************************************");
-        System.out.println("hpId = " + hpId);
-        System.out.println("Number of hidden layers = 2");
-        System.out.println("learnigRate = " + learnigRate);
-        System.out.println("Updater = " + "SGD");
-        System.out.println("mini-batch size (batchSize) = " + batchSize);
-        System.out.println("Number of sample size per iteration (nSamples) = " + nSamples);
-        System.out.println("i >= 0");
-        System.out.println("************************************************");
+        log.info("************************************************");
+        log.info("hpId = " + hpId);
+        log.info("Number of hidden layers = 2");
+        log.info("learnigRate = " + learnigRate);
+        log.info("Updater = " + "SGD");
+        log.info("mini-batch size (batchSize) = " + batchSize);
+        log.info("Number of sample size per iteration (nSamples) = " + nSamples);
+        log.info("i >= 0");
+        log.info("************************************************");
 
         MultiLayerNetwork model = getInitModel(learnigRate);
         //MultiLayerNetwork model = readModelFromFile("/down/ttt_model_h2_uSGD_ge_mb16_ss16_ev100000_aRP_3200000.zip");
@@ -59,7 +62,7 @@ public class MLPTicTacToe {
         ArrayList<Policy> opponentPool = new ArrayList<>();
 
         NeuralNetConfiguration config = model.conf();
-        System.out.println("config = " + config);
+        log.info("config = " + config);
 
         // training iteration
         long i = 0;
@@ -72,7 +75,7 @@ public class MLPTicTacToe {
         while(true) {
 
             if(i % 5000 == 0 || lastLosingRate == 0.0) {
-                System.out.println("Date = " + new Date());
+                log.info("Date = " + new Date());
                 evaluate(new Policy(model, 0.0, true), new SupervisedPolicy());
                 evaluateModel(model);
             }
@@ -89,8 +92,8 @@ public class MLPTicTacToe {
                 epsilon = Math.max(0.1, 1.0 - (double)i / 100000.0);
 
                 if(i % 1000 == 0) {
-                    System.out.println("Training count i = " + i);
-                    System.out.println("epsilon = " + epsilon);
+                    log.info("Training count i = " + i);
+                    log.info("epsilon = " + epsilon);
                 }
 
                 // Load the training data.
@@ -118,7 +121,7 @@ public class MLPTicTacToe {
         int numOutputs = 2;
         int numHiddenNodes = 9 * 3;
 
-        System.out.println("Build model....");
+        log.info("Build model....");
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .seed(seed)
                 .iterations(1)
@@ -184,18 +187,18 @@ public class MLPTicTacToe {
 
 /*
         if(gs.getWinner() == -1 && policy1.isToBeTrained()) {
-            System.out.println("LOSE **************");
-            System.out.println("moveList = " + moveList);
+            log.info("LOSE **************");
+            log.info("moveList = " + moveList);
         }
         if(gs.getWinner() == 1 && policy2.isToBeTrained()) {
-            System.out.println("LOSE **************");
-            System.out.println("moveList = " + moveList);
+            log.info("LOSE **************");
+            log.info("moveList = " + moveList);
         }
 */
 /*
 
-        System.out.println("gs = " + gs);
-        System.out.println("gggggggggggggggggggggggg\n\n");
+        log.info("gs = " + gs);
+        log.info("gggggggggggggggggggggggg\n\n");
 */
 
         int winner = gs.getWinner();
@@ -229,8 +232,8 @@ public class MLPTicTacToe {
 
     private static List<DataSet> getTrainingData(Policy playerPolicy, ArrayList<Policy> opponentPool) {
 
-        //System.out.println("Getting training data...");
-        //System.out.println("opponentPool.size() = " + opponentPool.size());
+        //log.info("Getting training data...");
+        //log.info("opponentPool.size() = " + opponentPool.size());
 
         Random rnd = new Random();
 
@@ -255,35 +258,35 @@ public class MLPTicTacToe {
 
         Collections.shuffle(listDs);
 
-        //System.out.println("listDs.size() = " + listDs.size());
-        //System.out.println("Getting training complete.");
+        //log.info("listDs.size() = " + listDs.size());
+        //log.info("Getting training complete.");
 
         return listDs;
     }
 
     public static MultiLayerNetwork readModelFromFile(String fileName) throws Exception {
 
-        System.out.println("Deserializing model...");
+        log.info("Deserializing model...");
 
         // Load the model
         File locationToSave = new File(fileName);
         MultiLayerNetwork model = ModelSerializer.restoreMultiLayerNetwork(locationToSave);
 
-        System.out.println("Deserializing model complete.");
+        log.info("Deserializing model complete.");
 
         return model;
     }
 
     public static void writeModelToFile(MultiLayerNetwork model, String fileName) throws Exception {
 
-        System.out.println("Serializing model...");
+        log.info("Serializing model...");
 
         // Save the model
         File locationToSave = new File(fileName); // Where to save the network. Note: the file is in .zip format - can be opened externally
         boolean saveUpdater = true; // Updater: i.e., the state for Momentum, RMSProp, Adagrad etc. Save this if you want to train your network more in the future
         ModelSerializer.writeModel(model, locationToSave, saveUpdater);
 
-        System.out.println("Serializing model complete.");
+        log.info("Serializing model complete.");
 
     }
 
@@ -294,11 +297,11 @@ public class MLPTicTacToe {
             GameState gs = new GameState();
 
             INDArray output = model.output(gs.getFeature(gs.getCurrentPlayer()));
-            System.out.println("output = " + output);
+            log.info("output = " + output);
 
             Policy policy = new Policy(model, 0.0);
             int a = policy.chooseMove(gs, true);
-            System.out.println("a = " + a);
+            log.info("a = " + a);
         }
 
         // Evaluate 2
@@ -310,11 +313,11 @@ public class MLPTicTacToe {
             gs.playMove(5);
 
             INDArray output = model.output(gs.getFeature(gs.getCurrentPlayer()));
-            System.out.println("output = " + output);
+            log.info("output = " + output);
 
             Policy policy = new Policy(model, 0.0);
             int a = policy.chooseMove(gs, true);
-            System.out.println("a = " + a);
+            log.info("a = " + a);
         }
 
         // Evaluate 3
@@ -325,11 +328,11 @@ public class MLPTicTacToe {
             gs.playMove(1);
 
             INDArray output = model.output(gs.getFeature(gs.getCurrentPlayer()));
-            System.out.println("output = " + output);
+            log.info("output = " + output);
 
             Policy policy = new Policy(model, 0.0);
             int a = policy.chooseMove(gs, true);
-            System.out.println("a = " + a);
+            log.info("a = " + a);
         }
 
         // Evaluate 4
@@ -340,11 +343,11 @@ public class MLPTicTacToe {
             gs.playMove(3);
 
             INDArray output = model.output(gs.getFeature(gs.getCurrentPlayer()));
-            System.out.println("output = " + output);
+            log.info("output = " + output);
 
             Policy policy = new Policy(model, 0.0);
             int a = policy.chooseMove(gs, true);
-            System.out.println("a = " + a);
+            log.info("a = " + a);
         }
     }
 
@@ -366,7 +369,7 @@ public class MLPTicTacToe {
 
     private static void evaluate(Policy playerPolicy, Policy opponentPolicy) {
 
-        System.out.println("Evaluating...");
+        log.info("Evaluating...");
 
         int numOfWins = 0;
         int numOfLosses = 0;
@@ -393,12 +396,12 @@ public class MLPTicTacToe {
 
         lastLosingRate = (double)numOfLosses / (double)numOfPlays;
 
-        System.out.println("\n");
-        System.out.println("*** Evaluation Result ***");
-        System.out.print(hpId + ": ");
-        System.out.print("Winning rate = " + (double)numOfWins / (double)numOfPlays + ", ");
-        System.out.print("Losing rate = " + lastLosingRate  + "\n");
-        System.out.println("*************************");
-        System.out.println("\n");
+        log.info("\n");
+        log.info("*** Evaluation Result ***");
+        log.info(hpId + ": ");
+        log.info("Winning rate = " + (double)numOfWins / (double)numOfPlays + ", ");
+        log.info("Losing rate = " + lastLosingRate  + "\n");
+        log.info("*************************");
+        log.info("\n");
     }
 }
