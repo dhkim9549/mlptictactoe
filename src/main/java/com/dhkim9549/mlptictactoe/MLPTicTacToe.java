@@ -74,7 +74,7 @@ public class MLPTicTacToe {
 
         while(true) {
 
-            if(i % 5000 == 0 || lastLosingRate == 0.0) {
+            if(i % 5000 == 0) {
                 log.info("Date = " + new Date());
                 evaluate(new Policy(model, 0.0, true), new SupervisedPolicy());
                 evaluateModel(model);
@@ -85,8 +85,8 @@ public class MLPTicTacToe {
                 opponentPool.add(new SupervisedPolicy());
             }
 
-            // If the model never loses during the evaluation, the training stops.
-            if(lastLosingRate != 0.0) {
+	    // train forever
+            {
 
                 i++;
                 epsilon = Math.max(0.1, 1.0 - (double)i / 100000.0);
@@ -105,7 +105,7 @@ public class MLPTicTacToe {
             }
 
             if(lastIterationModelSave != i) {
-                if (i % 10000 == 0 || lastLosingRate == 0.0) {
+                if (i % 100000 == 0) {
                     writeModelToFile(model, "/down/ttt_model_" + hpId + "_" + i + ".zip");
                     lastIterationModelSave = i;
                 }
